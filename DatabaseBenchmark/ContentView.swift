@@ -29,9 +29,14 @@ struct ContentView: View {
                                         HStack {
                                             Text(result.operationName)
                                             Spacer()
-                                            Text(String(format: "%.4f sec", result.durationInSeconds))
-                                                .font(.system(.subheadline, design: .monospaced))
-                                                .bold()
+                                            VStack(alignment: .trailing, spacing: 4) {
+                                                Text(String(format: "%.4f sec", result.durationInSeconds))
+                                                    .font(.system(.subheadline, design: .monospaced))
+                                                    .bold()
+                                                Text(String(format: "RAM: +%.2f MB", result.memoryUsedInMegabytes))
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                            }
                                         }
                                     }
                                 }
