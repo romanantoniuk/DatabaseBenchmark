@@ -58,14 +58,7 @@ public actor CoreDataStorage: DatabaseService {
             let request = NSFetchRequest<CDBenchmarkItem>(entityName: "CDBenchmarkItem")
             let results = try context.fetch(request)
             // Convert the CoreData objects back to our generic Swift model
-            return results.map { cdItem in
-                BenchmarkedItem(
-                    id: cdItem.id ?? UUID(),
-                    title: cdItem.title ?? "",
-                    timestamp: cdItem.timestamp ?? Date(),
-                    payloadSize: cdItem.payload?.count ?? 0
-                )
-            }
+            return results.map { cdItem in BenchmarkedItem(id: cdItem.id ?? UUID(), title: cdItem.title ?? "", timestamp: cdItem.timestamp ?? Date(), payloadSize: cdItem.payload?.count ?? 0) }
         }
     }
 

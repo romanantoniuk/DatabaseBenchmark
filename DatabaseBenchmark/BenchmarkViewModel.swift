@@ -10,6 +10,7 @@ import SwiftUI
 import CoreDomain
 import MeasurementLayer
 import Storage_CoreData
+import Storage_SwiftData 
 
 @Observable
 @MainActor
@@ -20,40 +21,49 @@ final class BenchmarkViewModel {
     
     private let runner = MeasurementRunner()
     private let coreDataService = CoreDataStorage()
+    private let swiftDataService = SwiftDataStorage()
     
-    func runCoreDataTest() async {
+    private let itemsCount = 10_000
+    
+    func runAllTests() async {
         guard !isRunning else { return }
+        results.removeAll()
         isRunning = true
-        // Generate test data (10,000 objects of 512 bytes each)
-        let itemsCount = 10_000
-        let items = (0..<itemsCount).map { i in
+        let testItems = (0..<itemsCount).map { i in
             BenchmarkedItem(title: "Item \(i)", payloadSize: 512)
         }
+        // Core Data
+        await runSingleBenchmark(service: coreDataService, items: testItems)
+        // 2 second pause between tests (iron rest)
+        try? await Task.sleep(for: .seconds(2))
+        // SwiftData
+        await runSingleBenchmark(service: swiftDataService, items: testItems)
+        isRunning = false
+    }
+    
+    private func runSingleBenchmark(service: any DatabaseService, items: [BenchmarkedItem]) async {
         do {
-            // Initializing the database
-            try await coreDataService.setup()
-            // Testing Insert
-            let insertResult = try await runner.runBenchmark(
-                databaseName: coreDataService.name,
+            try await service.setup()
+            // Write
+            let insertRes = try await runner.runBenchmark(
+                databaseName: service.name,
                 operationName: "Insert \(itemsCount) items"
             ) {
-                try await coreDataService.insert(items: items)
+                try await service.insert(items: items)
             }
-            results.append(insertResult)
-            // Testing Reading (Fetch)
-            let fetchResult = try await runner.runBenchmark(
-                databaseName: coreDataService.name,
+            results.append(insertRes)
+            // Read
+            let fetchRes = try await runner.runBenchmark(
+                databaseName: service.name,
                 operationName: "Fetch all items"
             ) {
-                _ = try await coreDataService.fetchAll()
+                _ = try await service.fetchAll()
             }
-            results.append(fetchResult)
-            // Cleaning the database after tests
-            try await coreDataService.clearAll()
+            results.append(fetchRes)
+            try await service.clearAll()
         } catch {
-            print("Error testing: \(error)")
+            print("Error \(service.name): \(error)")
         }
-        isRunning = false
     }
     
 }

@@ -15,40 +15,43 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if viewModel.results.isEmpty {
-                    ContentUnavailableView("No results",
+                if viewModel.results.isEmpty && !viewModel.isRunning {
+                    ContentUnavailableView("Ready for the test",
                                            systemImage: "chart.bar.xaxis",
-                                           description: Text("Click the button below to start testing your databases."))
+                                           description: Text("A comparison will be made between Core Data and SwiftData (10,000 records)"))
                 } else {
-                    List(viewModel.results) { result in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(result.databaseName)
-                                .font(.headline)
-                                .foregroundColor(.blue)
-                            
-                            HStack {
-                                Text(result.operationName)
-                                    .font(.subheadline)
-                                Spacer()
-                                Text(String(format: "%.4f сек", result.durationInSeconds))
-                                    .font(.system(.subheadline, design: .monospaced))
-                                    .bold()
+                    List {
+                        ForEach(["Core Data", "SwiftData"], id: \.self) { dbName in
+                            let dbResults = viewModel.results.filter { $0.databaseName == dbName }
+                            if !dbResults.isEmpty {
+                                Section(header: Text(dbName).font(.headline).foregroundColor(.blue)) {
+                                    ForEach(dbResults) { result in
+                                        HStack {
+                                            Text(result.operationName)
+                                            Spacer()
+                                            Text(String(format: "%.4f sec", result.durationInSeconds))
+                                                .font(.system(.subheadline, design: .monospaced))
+                                                .bold()
+                                        }
+                                    }
+                                }
                             }
                         }
-                        .padding(.vertical, 4)
                     }
                 }
+                
                 Button(action: {
-                    Task {
-                        await viewModel.runCoreDataTest()
-                    }
+                    Task { await viewModel.runAllTests() }
                 }) {
                     if viewModel.isRunning {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .padding(.horizontal)
+                        HStack {
+                            ProgressView()
+                            Text("Analyzing...")
+                        }
+                        .padding(.horizontal)
                     } else {
-                        Text("Run Core Data Benchmark")
+                        Text("Run benchmark")
+                            .frame(maxWidth: .infinity)
                     }
                 }
                 .disabled(viewModel.isRunning)
@@ -56,7 +59,7 @@ struct ContentView: View {
                 .controlSize(.large)
                 .padding()
             }
-            .navigationTitle("DB Benchmark")
+            .navigationTitle("DB Comparison")
         }
     }
     
