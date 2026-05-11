@@ -12,7 +12,7 @@ import CoreDomain
 
 public actor SwiftDataStorage: DatabaseService {
     
-    public let name = "SwiftData"
+    nonisolated public let name = "SwiftData"
     private var container: ModelContainer!
     
     public init() {}

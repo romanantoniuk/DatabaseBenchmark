@@ -10,7 +10,8 @@ import SwiftUI
 import CoreDomain
 import MeasurementLayer
 import Storage_CoreData
-import Storage_SwiftData 
+import Storage_SwiftData
+import Storage_Realm
 
 @Observable
 @MainActor
@@ -20,8 +21,14 @@ final class BenchmarkViewModel {
     var isRunning = false
     
     private let runner = MeasurementRunner()
+    
     private let coreDataService = CoreDataStorage()
     private let swiftDataService = SwiftDataStorage()
+    private let realmService = RealmStorage()
+    
+    var databaseNames: [String] {
+        [coreDataService.name, swiftDataService.name, realmService.name]
+    }
     
     private let itemsCount = 10_000
     
@@ -38,6 +45,10 @@ final class BenchmarkViewModel {
         try? await Task.sleep(for: .seconds(2))
         // SwiftData
         await runSingleBenchmark(service: swiftDataService, items: testItems)
+        // 2 second pause between tests (iron rest)
+        try? await Task.sleep(for: .seconds(2))
+        // Realm
+        await runSingleBenchmark(service: realmService, items: testItems)
         isRunning = false
     }
     

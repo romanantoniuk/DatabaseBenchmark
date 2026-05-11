@@ -11,7 +11,7 @@ import CoreDomain
 
 public actor CoreDataStorage: DatabaseService {
     
-    public let name = "Core Data"
+    nonisolated public let name = "Core Data"
     private var container: NSPersistentContainer!
 
     public init() {}

@@ -21,7 +21,7 @@ struct ContentView: View {
                                            description: Text("A comparison will be made between Core Data and SwiftData (10,000 records)"))
                 } else {
                     List {
-                        ForEach(["Core Data", "SwiftData"], id: \.self) { dbName in
+                        ForEach(viewModel.databaseNames, id: \.self) { dbName in
                             let dbResults = viewModel.results.filter { $0.databaseName == dbName }
                             if !dbResults.isEmpty {
                                 Section(header: Text(dbName).font(.headline).foregroundColor(.blue)) {
@@ -39,7 +39,6 @@ struct ContentView: View {
                         }
                     }
                 }
-                
                 Button(action: {
                     Task { await viewModel.runAllTests() }
                 }) {
