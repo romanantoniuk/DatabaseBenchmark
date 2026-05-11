@@ -1,6 +1,15 @@
 {
-  "originHash" : "4b38012cd7a9bf0f02bb16bb2f6816bf194a8345226da83a34d1a120c4a94193",
+  "originHash" : "eda4f82a03044630755ada16c7743799825743f060174be52dfed73cc7c0210b",
   "pins" : [
+    {
+      "identity" : "grdb.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/groue/GRDB.swift.git",
+      "state" : {
+        "revision" : "2cf6c756e1e5ef6901ebae16576a7e4e4b834622",
+        "version" : "6.29.3"
+      }
+    },
     {
       "identity" : "realm-core",
       "kind" : "remoteSourceControl",

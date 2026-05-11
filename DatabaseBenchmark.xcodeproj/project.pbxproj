@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CE8228572FB243EF005041C1 /* Storage_SwiftData in Frameworks */ = {isa = PBXBuildFile; productRef = CE8228562FB243EF005041C1 /* Storage_SwiftData */; };
 		CE82285A2FB24C1B005041C1 /* Storage_Realm in Frameworks */ = {isa = PBXBuildFile; productRef = CE8228592FB24C1B005041C1 /* Storage_Realm */; };
+		CE82285D2FB2554E005041C1 /* Storage_GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = CE82285C2FB2554E005041C1 /* Storage_GRDB */; };
 		CECD25642FB225450070B0F3 /* CoreDomain in Frameworks */ = {isa = PBXBuildFile; productRef = CECD25632FB225450070B0F3 /* CoreDomain */; };
 		CECD25672FB228080070B0F3 /* MeasurementLayer in Frameworks */ = {isa = PBXBuildFile; productRef = CECD25662FB228080070B0F3 /* MeasurementLayer */; };
 		CECD256A2FB22D4F0070B0F3 /* Storage_CoreData in Frameworks */ = {isa = PBXBuildFile; productRef = CECD25692FB22D4F0070B0F3 /* Storage_CoreData */; };
@@ -17,6 +18,7 @@
 /* Begin PBXFileReference section */
 		CE8228552FB24108005041C1 /* Storage_SwiftData */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Storage_SwiftData; sourceTree = "<group>"; };
 		CE8228582FB2482B005041C1 /* Storage_Realm */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Storage_Realm; sourceTree = "<group>"; };
+		CE82285B2FB2535B005041C1 /* Storage_GRDB */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Storage_GRDB; sourceTree = "<group>"; };
 		CECD25522FB224470070B0F3 /* DatabaseBenchmark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatabaseBenchmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECD25602FB225050070B0F3 /* CoreDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreDomain; sourceTree = "<group>"; };
 		CECD25652FB227E70070B0F3 /* MeasurementLayer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MeasurementLayer; sourceTree = "<group>"; };
@@ -39,6 +41,7 @@
 				CE8228572FB243EF005041C1 /* Storage_SwiftData in Frameworks */,
 				CECD25642FB225450070B0F3 /* CoreDomain in Frameworks */,
 				CE82285A2FB24C1B005041C1 /* Storage_Realm in Frameworks */,
+				CE82285D2FB2554E005041C1 /* Storage_GRDB in Frameworks */,
 				CECD256A2FB22D4F0070B0F3 /* Storage_CoreData in Frameworks */,
 				CECD25672FB228080070B0F3 /* MeasurementLayer in Frameworks */,
 			);
@@ -50,6 +53,7 @@
 		CECD25492FB224470070B0F3 = {
 			isa = PBXGroup;
 			children = (
+				CE82285B2FB2535B005041C1 /* Storage_GRDB */,
 				CE8228582FB2482B005041C1 /* Storage_Realm */,
 				CE8228552FB24108005041C1 /* Storage_SwiftData */,
 				CECD25682FB22D3E0070B0F3 /* Storage_CoreData */,
@@ -101,6 +105,7 @@
 				CECD25692FB22D4F0070B0F3 /* Storage_CoreData */,
 				CE8228562FB243EF005041C1 /* Storage_SwiftData */,
 				CE8228592FB24C1B005041C1 /* Storage_Realm */,
+				CE82285C2FB2554E005041C1 /* Storage_GRDB */,
 			);
 			productName = DatabaseBenchmark;
 			productReference = CECD25522FB224470070B0F3 /* DatabaseBenchmark.app */;
@@ -377,6 +382,10 @@
 		CE8228592FB24C1B005041C1 /* Storage_Realm */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Storage_Realm;
+		};
+		CE82285C2FB2554E005041C1 /* Storage_GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Storage_GRDB;
 		};
 		CECD25632FB225450070B0F3 /* CoreDomain */ = {
 			isa = XCSwiftPackageProductDependency;
