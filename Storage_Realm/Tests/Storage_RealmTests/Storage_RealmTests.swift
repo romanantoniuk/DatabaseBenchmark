@@ -1,8 +1,23 @@
 import Testing
 @testable import Storage_Realm
+import CoreDomain
 
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    // Swift Testing Documentation
-    // https://developer.apple.com/documentation/testing
+@Suite(.serialized)
+struct RealmStorageTests {
+    
+    let sut = RealmStorage()
+    
+    @Test("Test Realm Insert and Clear")
+    func testInsertAndClear() async throws {
+        try await sut.setup()
+        try await sut.clearAll()
+        let items = [BenchmarkedItem(title: "Realm 1"), BenchmarkedItem(title: "Realm 2")]
+        try await sut.insert(items: items)
+        let fetchedAfterInsert = try await sut.fetchAll()
+        #expect(fetchedAfterInsert.count == 2)
+        try await sut.clearAll()
+        let fetchedAfterClear = try await sut.fetchAll()
+        #expect(fetchedAfterClear.isEmpty)
+    }
+    
 }

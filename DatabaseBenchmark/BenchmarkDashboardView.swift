@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  BenchmarkDashboardView.swift
 //  DatabaseBenchmark
 //
 //  Created by Roman Antoniuk on 11.05.2026.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MeasurementLayer
 
-struct ContentView: View {
+struct BenchmarkDashboardView: View {
     
     @State private var viewModel = BenchmarkViewModel()
     

@@ -11,7 +11,7 @@ import SwiftUI
 struct DatabaseBenchmarkApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BenchmarkDashboardView()
         }
     }
 }
