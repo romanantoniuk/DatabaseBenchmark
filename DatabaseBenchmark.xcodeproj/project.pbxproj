@@ -6,8 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CECD25642FB225450070B0F3 /* CoreDomain in Frameworks */ = {isa = PBXBuildFile; productRef = CECD25632FB225450070B0F3 /* CoreDomain */; };
+		CECD25672FB228080070B0F3 /* MeasurementLayer in Frameworks */ = {isa = PBXBuildFile; productRef = CECD25662FB228080070B0F3 /* MeasurementLayer */; };
+		CECD256A2FB22D4F0070B0F3 /* Storage_CoreData in Frameworks */ = {isa = PBXBuildFile; productRef = CECD25692FB22D4F0070B0F3 /* Storage_CoreData */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		CECD25522FB224470070B0F3 /* DatabaseBenchmark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatabaseBenchmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECD25602FB225050070B0F3 /* CoreDomain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreDomain; sourceTree = "<group>"; };
+		CECD25652FB227E70070B0F3 /* MeasurementLayer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MeasurementLayer; sourceTree = "<group>"; };
+		CECD25682FB22D3E0070B0F3 /* Storage_CoreData */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Storage_CoreData; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +32,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CECD25642FB225450070B0F3 /* CoreDomain in Frameworks */,
+				CECD256A2FB22D4F0070B0F3 /* Storage_CoreData in Frameworks */,
+				CECD25672FB228080070B0F3 /* MeasurementLayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,7 +44,11 @@
 		CECD25492FB224470070B0F3 = {
 			isa = PBXGroup;
 			children = (
+				CECD25682FB22D3E0070B0F3 /* Storage_CoreData */,
+				CECD25652FB227E70070B0F3 /* MeasurementLayer */,
+				CECD25602FB225050070B0F3 /* CoreDomain */,
 				CECD25542FB224470070B0F3 /* DatabaseBenchmark */,
+				CECD25622FB225450070B0F3 /* Frameworks */,
 				CECD25532FB224470070B0F3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +59,13 @@
 				CECD25522FB224470070B0F3 /* DatabaseBenchmark.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CECD25622FB225450070B0F3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -65,6 +88,9 @@
 			);
 			name = DatabaseBenchmark;
 			packageProductDependencies = (
+				CECD25632FB225450070B0F3 /* CoreDomain */,
+				CECD25662FB228080070B0F3 /* MeasurementLayer */,
+				CECD25692FB22D4F0070B0F3 /* Storage_CoreData */,
 			);
 			productName = DatabaseBenchmark;
 			productReference = CECD25522FB224470070B0F3 /* DatabaseBenchmark.app */;
@@ -332,6 +358,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CECD25632FB225450070B0F3 /* CoreDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreDomain;
+		};
+		CECD25662FB228080070B0F3 /* MeasurementLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MeasurementLayer;
+		};
+		CECD25692FB22D4F0070B0F3 /* Storage_CoreData */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Storage_CoreData;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CECD254A2FB224470070B0F3 /* Project object */;
 }
