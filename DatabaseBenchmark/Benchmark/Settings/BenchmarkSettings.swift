@@ -10,10 +10,13 @@ import MeasurementLayer
 
 @Observable
 final class BenchmarkSettings {
-
+    
+    // MARK: - Databases
+    var enabledDatabases: Set<String> = []
+    
     // MARK: - Benchmark
     var itemsCount = 10000
-    var enableConcurrencyTest = true 
+    var enableConcurrencyTest = true
     var concurrentTasks = 10
     
     // MARK: - Measurement
@@ -22,10 +25,10 @@ final class BenchmarkSettings {
     var pauseBetweenRunsMS = 100
     var memoryStrategy: MemoryStrategyOption = .peak
     var samplingIntervalMS = 5
-
+    
     // MARK: - UI
     var visibleMetrics: Set<MemoryMetric> = [.physFootprint, .residentSize]
-
+    
     var runnerConfiguration: MeasurementRunner.Configuration {
         .init(
             iterations: iterations,
@@ -36,7 +39,7 @@ final class BenchmarkSettings {
             )
         )
     }
-
+    
     func binding(for metric: MemoryMetric) -> Binding<Bool> {
         Binding(
             get: {
@@ -51,8 +54,23 @@ final class BenchmarkSettings {
             }
         )
     }
-
+    
+    func binding(forDatabase name: String) -> Binding<Bool> {
+        Binding(
+            get: {
+                self.enabledDatabases.contains(name)
+            },
+            set: { isEnabled in
+                if isEnabled {
+                    self.enabledDatabases.insert(name)
+                } else if self.enabledDatabases.count > 1 {
+                    self.enabledDatabases.remove(name)
+                }
+            }
+        )
+    }
+    
     static let itemOptions = [1000, 5000, 10000, 50000, 100000]
     static let pauseOptions = [0, 50, 100, 200, 500, 1000, 2000]
-
+    
 }

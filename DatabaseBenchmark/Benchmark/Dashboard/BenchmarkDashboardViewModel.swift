@@ -16,12 +16,12 @@ import StorageGRDB
 @Observable
 @MainActor
 final class BenchmarkDashboardViewModel {
-
+    
     var results: [PerformanceResult] = []
     var isRunning = false
     var errorMessage: String?
     let settings = BenchmarkSettings()
-
+    
     var hasError: Bool {
         get {
             errorMessage != nil
@@ -36,13 +36,13 @@ final class BenchmarkDashboardViewModel {
     var showEmptyState: Bool {
         results.isEmpty && !isRunning
     }
-
+    
     var activeMetrics: [MemoryMetric] {
         MemoryMetric.allCases.filter {
             settings.visibleMetrics.contains($0)
         }
     }
-
+    
     var itemsConfigText: String {
         settings.itemsCount.formatted()
     }
@@ -52,26 +52,40 @@ final class BenchmarkDashboardViewModel {
     var memoryStrategyConfigText: String {
         settings.memoryStrategy.rawValue
     }
-
+    
     var groupedResults: [(databaseName: String, results: [PerformanceResult])] {
         databaseNames.compactMap { name in
             let dbResults = results.filter { $0.databaseName == name }
             return dbResults.isEmpty ? nil : (name, dbResults)
         }
     }
-
+    
     private let coreData = CoreDataStorage()
     private let swiftData = SwiftDataStorage()
+    private let swiftDataOptimized = SwiftDataOptimizedStorage()
     private let realm = RealmStorage()
     private let grdb = GRDBStorage()
-
-    private var services: [any DatabaseService] {
-        [coreData, swiftData, realm, grdb]
+    
+    private var allServices: [any DatabaseService] {
+        [coreData, swiftData,  swiftDataOptimized,  realm, grdb]
     }
+    
+    var allDatabaseNames: [String] {
+        allServices.map(\.name)
+    }
+    
+    private var activeServices: [any DatabaseService] {
+        allServices.filter { settings.enabledDatabases.contains($0.name) }
+    }
+    
     var databaseNames: [String] {
-        services.map(\.name)
+        activeServices.map(\.name)
     }
-
+    
+    init() {
+        settings.enabledDatabases = Set(allDatabaseNames)
+    }
+    
     func runAllTests() async {
         guard !isRunning else {
             return }
@@ -85,14 +99,14 @@ final class BenchmarkDashboardViewModel {
         let items = (0..<settings.itemsCount).map {
             BenchmarkedItem(title: "Item \($0)", payloadSize: 512)
         }
-        for (index, service) in services.enumerated() {
+        for (index, service) in activeServices.enumerated() {
             if index > 0 {
                 try? await Task.sleep(for: .seconds(2))
             }
             await runBenchmark(for: service, items: items, using: runner)
         }
     }
-
+    
     private func runBenchmark(for service: any DatabaseService, items: [BenchmarkedItem], using runner: MeasurementRunner) async {
         do {
             try await service.setup()
@@ -132,31 +146,31 @@ final class BenchmarkDashboardViewModel {
                 let result = try await runner.runBenchmark(
                     databaseName: service.name,
                     operationName: "Concurrent Insert (\(settings.concurrentTasks) tasks)",
-                    setup: { try await service.clearAll() },
-                    teardown: { try await service.clearAll() }
+                    setup: {
+                        try await service.clearAll()
+                    },
+                    teardown: {
+                        try await service.clearAll()
+                    }
                 ) {
                     let taskCount = max(1, min(settings.concurrentTasks, items.count))
                     let chunkSize = (items.count + taskCount - 1) / taskCount
-
                     try await withThrowingTaskGroup(of: Void.self) { group in
                         var index = 0
-
                         for _ in 0..<taskCount {
                             let end = min(index + chunkSize, items.count)
                             let chunk = Array(items[index..<end])
                             index = end
-
                             group.addTask {
                                 try await service.insert(items: chunk)
                             }
-
-                            if index >= items.count { break }
+                            if index >= items.count {
+                                break
+                            }
                         }
-
                         try await group.waitForAll()
                     }
                 }
-
                 results.append(result)
             }
         } catch {

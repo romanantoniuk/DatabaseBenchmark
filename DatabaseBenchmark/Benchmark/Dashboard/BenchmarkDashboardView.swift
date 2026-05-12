@@ -30,7 +30,7 @@ struct BenchmarkDashboardView: View {
                 }
             }
             .sheet(isPresented: $showSettings) {
-                BenchmarkSettingsView(settings: viewModel.settings)
+                BenchmarkSettingsView(settings: viewModel.settings, availableDatabases: viewModel.allDatabaseNames)
                     .presentationDetents([.large])
             }
             .alert("Error", isPresented: $viewModel.hasError, actions: {

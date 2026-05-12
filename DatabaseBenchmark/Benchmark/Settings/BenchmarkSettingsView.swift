@@ -5,16 +5,17 @@
 //  Created by Roman Antoniuk on 12.05.2026.
 //
 
-
 import SwiftUI
 
 struct BenchmarkSettingsView: View {
     
     @Bindable var settings: BenchmarkSettings
+    let availableDatabases: [String]
     
     var body: some View {
         NavigationStack {
             Form {
+                databasesSection
                 benchmarkSection
                 runnerSection
                 memorySection
@@ -25,6 +26,18 @@ struct BenchmarkSettingsView: View {
     }
     
     // MARK: - Sections
+    private var databasesSection: some View {
+        Section {
+            ForEach(availableDatabases, id: \.self) { dbName in
+                Toggle(dbName, isOn: settings.binding(forDatabase: dbName))
+            }
+        } header: {
+            Text("Target Databases")
+        } footer: {
+            Text("Select at least one database to run the benchmark against.")
+        }
+    }
+    
     private var benchmarkSection: some View {
         Section {
             Picker("Items count", selection: $settings.itemsCount) {

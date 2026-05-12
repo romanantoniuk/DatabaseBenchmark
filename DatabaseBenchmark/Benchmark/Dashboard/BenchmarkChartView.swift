@@ -68,11 +68,6 @@ struct BenchmarkChartView: View {
                 .foregroundStyle(by: .value("Operation", result.operationName))
                 .position(by: .value("Operation", result.operationName))
             }
-            .chartForegroundStyleScale([
-                "Insert \(results.first?.operationName.components(separatedBy: " ").dropFirst().joined(separator: " ") ?? "")": .purple,
-                "Fetch all items": .teal,
-                "Concurrent Insert": .indigo
-            ])
             .frame(height: 220)
             .chartLegend(.hidden)
         }
