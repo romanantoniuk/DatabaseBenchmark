@@ -5,7 +5,6 @@
 //  Created by Roman Antoniuk on 12.05.2026.
 //
 
-
 import SwiftUI
 import Charts
 import MeasurementLayer
@@ -18,6 +17,7 @@ struct BenchmarkChartView: View {
         VStack(spacing: 32) {
             timeChart
             memoryChart
+            residentMemoryChart
         }
         .padding(.vertical)
     }
@@ -51,6 +51,28 @@ struct BenchmarkChartView: View {
                 .foregroundStyle(by: .value("Operation", result.operationName))
                 .position(by: .value("Operation", result.operationName))
             }
+            .frame(height: 220)
+            .chartLegend(.hidden)
+        }
+    }
+    
+    private var residentMemoryChart: some View {
+        VStack(alignment: .leading) {
+            Text("Memory Impact: Resident (MB)")
+                .font(.headline)
+            Chart(results) { result in
+                BarMark(
+                    x: .value("Database", result.databaseName),
+                    y: .value("Memory", result.residentSizeDeltaMB)
+                )
+                .foregroundStyle(by: .value("Operation", result.operationName))
+                .position(by: .value("Operation", result.operationName))
+            }
+            .chartForegroundStyleScale([
+                "Insert \(results.first?.operationName.components(separatedBy: " ").dropFirst().joined(separator: " ") ?? "")": .purple,
+                "Fetch all items": .teal,
+                "Concurrent Insert": .indigo
+            ])
             .frame(height: 220)
             .chartLegend(.hidden)
         }
