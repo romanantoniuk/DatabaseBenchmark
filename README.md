@@ -3,7 +3,8 @@
 A practical R&D project to see how different local databases actually perform on iOS. Instead of just tracking time, it measures real memory footprint using Mach kernel APIs and tests thread safety under load.
 
 ## Frameworks tested
-- **Core Data** (classic batch insert)
+- **Core Data (Standard)** (classic NSManagedObject batch insert)
+- **Core Data (Optimized)** (streaming SQLite writes via `NSBatchInsertRequest`)
 - **SwiftData (Standard)** (default `@Model` overhead)
 - **SwiftData (Optimized)** (memory-efficient batching using isolated `ModelContext`s)
 - **Realm** (v20, local-only)
@@ -20,6 +21,7 @@ A practical R&D project to see how different local databases actually perform on
 - **Data-Driven UI:** SwiftUI + Charts to visualize the results dynamically. Target databases can be toggled on/off on the fly to isolate specific tests.
 
 ## Key Observations
+- **Optimized Core Data** bypasses the managed object context entirely using `NSBatchInsertRequest`, resulting in near-zero memory overhead and massive speed gains.
 - **Standard SwiftData** can cause massive memory spikes during bulk inserts due to context retention.
 - **Optimized SwiftData** (using batched inserts and scope-isolated contexts) drastically reduces the physical memory footprint, bringing it closer to lower-level solutions.
 - **GRDB** maintains an incredibly flat heap footprint since it maps directly to SQLite via lightweight structs.

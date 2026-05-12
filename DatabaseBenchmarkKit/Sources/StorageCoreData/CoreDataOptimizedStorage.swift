@@ -1,17 +1,17 @@
 //
-//  CoreDataStorage.swift
-//  StorageCoreData
+//  CoreDataOptimizedStorage.swift
+//  DatabaseBenchmarkKit
 //
-//  Created by Roman Antoniuk on 11.05.2026.
+//  Created by Roman Antoniuk on 13.05.2026.
 //
 
 import Foundation
 import CoreData
 import CoreDomain
 
-public actor CoreDataStorage: DatabaseService {
+public actor CoreDataOptimizedStorage: DatabaseService {
     
-    nonisolated public let name = "Core Data (Standard)"
+    nonisolated public let name = "Core Data (Optimized)"
     private var container: NSPersistentContainer!
 
     public init() {}
@@ -37,23 +37,43 @@ public actor CoreDataStorage: DatabaseService {
     }
 
     public func insert(items: [BenchmarkedItem]) async throws {
+        guard !items.isEmpty else {
+            return
+        }
         try await container.performBackgroundTask { context in
-            for item in items {
-                let cdItem = CDBenchmarkItem(context: context)
-                cdItem.id = item.id
-                cdItem.title = item.title
-                cdItem.timestamp = item.timestamp
-                cdItem.payload = item.payload
-            }
-            try context.save()
+            var index = 0
+            let batchInsert = NSBatchInsertRequest(entityName: "CDBenchmarkItem", dictionaryHandler: { dictionary in
+                guard index < items.count else {
+                    return true
+                }
+                let item = items[index]
+                dictionary.addEntries(from: [
+                    "id": item.id,
+                    "title": item.title,
+                    "timestamp": item.timestamp,
+                    "payload": item.payload
+                ])
+                index += 1
+                return false
+            })
+            try context.execute(batchInsert)
         }
     }
 
     public func fetchAll() async throws -> [BenchmarkedItem] {
         try await container.performBackgroundTask { context in
             let request = NSFetchRequest<CDBenchmarkItem>(entityName: "CDBenchmarkItem")
+            request.includesPendingChanges = false
+            request.fetchBatchSize = 1000
             let results = try context.fetch(request)
-            return results.map { cdItem in BenchmarkedItem(id: cdItem.id ?? UUID(), title: cdItem.title ?? "", timestamp: cdItem.timestamp ?? Date(), payloadSize: cdItem.payload?.count ?? 0) }
+            var benchmarkedItems: [BenchmarkedItem] = []
+            benchmarkedItems.reserveCapacity(results.count)
+            for cdItem in results {
+                autoreleasepool {
+                    benchmarkedItems.append(BenchmarkedItem(id: cdItem.id ?? UUID(), title: cdItem.title ?? "", timestamp: cdItem.timestamp ?? Date(), payloadSize: cdItem.payload?.count ?? 0))
+                }
+            }
+            return benchmarkedItems
         }
     }
 

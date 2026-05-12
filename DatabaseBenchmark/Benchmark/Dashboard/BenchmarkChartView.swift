@@ -14,7 +14,7 @@ struct BenchmarkChartView: View {
     let results: [PerformanceResult]
     
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 20) {
             timeChart
             memoryChart
             residentMemoryChart
@@ -34,7 +34,7 @@ struct BenchmarkChartView: View {
                 .foregroundStyle(by: .value("Operation", result.operationName))
                 .position(by: .value("Operation", result.operationName))
             }
-            .frame(height: 220)
+            .frame(height: 180)
             .chartLegend(position: .bottom)
         }
     }
@@ -51,7 +51,7 @@ struct BenchmarkChartView: View {
                 .foregroundStyle(by: .value("Operation", result.operationName))
                 .position(by: .value("Operation", result.operationName))
             }
-            .frame(height: 220)
+            .frame(height: 180)
             .chartLegend(.hidden)
         }
     }
@@ -68,7 +68,7 @@ struct BenchmarkChartView: View {
                 .foregroundStyle(by: .value("Operation", result.operationName))
                 .position(by: .value("Operation", result.operationName))
             }
-            .frame(height: 220)
+            .frame(height: 180)
             .chartLegend(.hidden)
         }
     }
