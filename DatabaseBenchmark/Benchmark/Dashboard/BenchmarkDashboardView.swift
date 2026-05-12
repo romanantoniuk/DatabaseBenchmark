@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct BenchmarkDashboardView: View {
-
+    
     @State private var viewModel = BenchmarkDashboardViewModel()
     @State private var showSettings = false
-
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -40,7 +40,7 @@ struct BenchmarkDashboardView: View {
             })
         }
     }
-
+    
     // MARK: - Content
     @ViewBuilder
     private var contentView: some View {
@@ -50,7 +50,7 @@ struct BenchmarkDashboardView: View {
             resultsList
         }
     }
-
+    
     private var emptyStateView: some View {
         ContentUnavailableView(
             "Ready for the test",
@@ -58,10 +58,16 @@ struct BenchmarkDashboardView: View {
             description: Text("Configure settings and tap Run benchmark")
         )
     }
-
+    
     private var resultsList: some View {
         List {
             configurationHeader
+            if !viewModel.results.isEmpty {
+                Section {
+                    BenchmarkChartView(results: viewModel.results)
+                        .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+                }
+            }
             ForEach(viewModel.groupedResults, id: \.databaseName) { group in
                 Section {
                     ForEach(group.results) { result in
@@ -76,7 +82,7 @@ struct BenchmarkDashboardView: View {
         }
         .listStyle(.insetGrouped)
     }
-
+    
     private var configurationHeader: some View {
         Section {
             LabeledContent("Items", value: viewModel.itemsConfigText)
@@ -86,7 +92,7 @@ struct BenchmarkDashboardView: View {
             Text("Configuration")
         }
     }
-
+    
     // MARK: - Run button
     private var runButton: some View {
         Button {
