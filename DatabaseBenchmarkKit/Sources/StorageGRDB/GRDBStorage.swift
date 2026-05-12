@@ -20,7 +20,6 @@ public actor GRDBStorage: DatabaseService {
 
     public func setup() async throws {
         let fileURL = URL.documentsDirectory.appending(path: "grdb_benchmark.sqlite")
-        // Creating a queue for working with a database file
         dbQueue = try DatabaseQueue(path: fileURL.path)
         try await dbQueue.write { db in
             try db.create(table: GRDBItem.databaseTableName, ifNotExists: true) { t in

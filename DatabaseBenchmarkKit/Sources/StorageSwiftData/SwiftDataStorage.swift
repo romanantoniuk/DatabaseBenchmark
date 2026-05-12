@@ -18,14 +18,12 @@ public actor SwiftDataStorage: DatabaseService {
     public init() {}
 
     public func setup() async throws {
-        // Configure the configuration (specify the path to the file)
         let schema = Schema([SDItem.self])
         let config = ModelConfiguration(url: URL.documentsDirectory.appending(path: "swiftdata_benchmark.store"))
         container = try ModelContainer(for: schema, configurations: [config])
     }
 
     public func insert(items: [BenchmarkedItem]) async throws {
-        // New context for background operations
         let context = ModelContext(container)
         for item in items {
             let sdItem = SDItem(

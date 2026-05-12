@@ -128,7 +128,37 @@ final class BenchmarkDashboardViewModel {
                 _ = try await service.fetchAll()
             }
             results.append(fetchResult)
-            
+            if settings.enableConcurrencyTest {
+                let result = try await runner.runBenchmark(
+                    databaseName: service.name,
+                    operationName: "Concurrent Insert (\(settings.concurrentTasks) tasks)",
+                    setup: { try await service.clearAll() },
+                    teardown: { try await service.clearAll() }
+                ) {
+                    let taskCount = max(1, min(settings.concurrentTasks, items.count))
+                    let chunkSize = (items.count + taskCount - 1) / taskCount
+
+                    try await withThrowingTaskGroup(of: Void.self) { group in
+                        var index = 0
+
+                        for _ in 0..<taskCount {
+                            let end = min(index + chunkSize, items.count)
+                            let chunk = Array(items[index..<end])
+                            index = end
+
+                            group.addTask {
+                                try await service.insert(items: chunk)
+                            }
+
+                            if index >= items.count { break }
+                        }
+
+                        try await group.waitForAll()
+                    }
+                }
+
+                results.append(result)
+            }
         } catch {
             errorMessage = "\(service.name): \(error.localizedDescription)"
         }

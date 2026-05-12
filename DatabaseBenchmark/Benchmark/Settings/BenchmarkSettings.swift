@@ -13,7 +13,9 @@ final class BenchmarkSettings {
 
     // MARK: - Benchmark
     var itemsCount = 10000
-
+    var enableConcurrencyTest = true 
+    var concurrentTasks = 10
+    
     // MARK: - Measurement
     var iterations = 5
     var warmupIterations = 2

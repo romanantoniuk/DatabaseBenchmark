@@ -41,8 +41,6 @@ public actor RealmStorage: DatabaseService {
         try await Task.detached {
             let realm = try Realm(configuration: self.config)
             let results = realm.objects(RealmItem.self)
-            // Map is executed lazily, so we convert everything to an array at once,
-            // to avoid passing Realm objects between threads (this will cause a crash)
             return Array(results).map { realmItem in BenchmarkedItem(id: realmItem.id, title: realmItem.title, timestamp: realmItem.timestamp, payloadSize: realmItem.payload.count) }
         }.value
     }

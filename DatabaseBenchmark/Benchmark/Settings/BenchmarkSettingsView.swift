@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct BenchmarkSettingsView: View {
-
+    
     @Bindable var settings: BenchmarkSettings
-
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -23,19 +23,31 @@ struct BenchmarkSettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-
+    
     // MARK: - Sections
     private var benchmarkSection: some View {
-        Section("Benchmark") {
+        Section {
             Picker("Items count", selection: $settings.itemsCount) {
                 ForEach(BenchmarkSettings.itemOptions, id: \.self) { count in
                     Text(count.formatted())
                         .tag(count)
                 }
             }
+            Toggle("Concurrent test", isOn: $settings.enableConcurrencyTest)
+            if settings.enableConcurrencyTest {
+                Stepper(
+                    "Tasks: \(settings.concurrentTasks)",
+                    value: $settings.concurrentTasks,
+                    in: 2...50
+                )
+            }
+        } header: {
+            Text("Benchmark")
+        } footer: {
+            Text("Runs insert operations in parallel to stress test write contention.")
         }
     }
-
+    
     private var runnerSection: some View {
         Section {
             Stepper(
@@ -63,7 +75,7 @@ struct BenchmarkSettingsView: View {
             Text("More iterations improve consistency. Warmup avoids cold-start noise.")
         }
     }
-
+    
     private var memorySection: some View {
         Section {
             Picker("Strategy", selection: $settings.memoryStrategy) {
@@ -100,5 +112,5 @@ struct BenchmarkSettingsView: View {
             Text(settings.memoryStrategy.helpText)
         }
     }
-
+    
 }
