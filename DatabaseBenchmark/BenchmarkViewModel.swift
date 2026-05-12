@@ -9,10 +9,10 @@
 import SwiftUI
 import CoreDomain
 import MeasurementLayer
-import Storage_CoreData
-import Storage_SwiftData
-import Storage_Realm
-import Storage_GRDB
+import StorageCoreData
+import StorageSwiftData
+import StorageRealm
+import StorageGRDB
 
 @Observable
 @MainActor
