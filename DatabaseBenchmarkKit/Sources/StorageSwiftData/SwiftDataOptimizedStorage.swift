@@ -33,23 +33,27 @@ public actor SwiftDataOptimizedStorage: DatabaseService {
         while index < items.count {
             let end = min(index + batchSize, items.count)
             let chunk = items[index..<end]
-            let context = ModelContext(container)
-            context.autosaveEnabled = false
-            for item in chunk {
-                let sdItem = SDItem(id: item.id, title: item.title, timestamp: item.timestamp, payload: item.payload
-                )
-                context.insert(sdItem)
+            try autoreleasepool {
+                let context = ModelContext(container)
+                context.autosaveEnabled = false
+                for item in chunk {
+                    let sdItem = SDItem(id: item.id, title: item.title, timestamp: item.timestamp, payload: item.payload)
+                    context.insert(sdItem)
+                }
+                try context.save()
             }
-            try context.save()
             index = end
         }
     }
     
     public func fetchAll() async throws -> [BenchmarkedItem] {
         let context = ModelContext(container)
-        let descriptor = FetchDescriptor<SDItem>()
+        var descriptor = FetchDescriptor<SDItem>()
+        descriptor.includePendingChanges = false
         let results = try context.fetch(descriptor)
-        return results.map { sdItem in BenchmarkedItem(id: sdItem.id, title: sdItem.title, timestamp: sdItem.timestamp, payloadSize: sdItem.payload.count) }
+        return results.map { sdItem in
+            BenchmarkedItem(id: sdItem.id, title: sdItem.title, timestamp: sdItem.timestamp, payloadSize: sdItem.payload.count)
+        }
     }
     
     public func clearAll() async throws {
