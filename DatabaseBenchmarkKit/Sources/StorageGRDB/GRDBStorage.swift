@@ -5,14 +5,13 @@
 //  Created by Roman Antoniuk on 11.05.2026.
 //
 
-
 import Foundation
 import GRDB
 import CoreDomain
 
 public actor GRDBStorage: DatabaseService {
 
-    nonisolated public let name = "GRDB (SQLite)"
+    nonisolated public let name = "GRDB (SQLite) (Standard)"
     
     private var dbQueue: DatabaseQueue!
 

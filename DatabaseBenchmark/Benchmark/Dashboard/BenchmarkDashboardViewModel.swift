@@ -65,10 +65,12 @@ final class BenchmarkDashboardViewModel {
     private let swiftData = SwiftDataStorage()
     private let swiftDataOptimized = SwiftDataOptimizedStorage()
     private let realm = RealmStorage()
+    private let realmOptimized = RealmOptimizedStorage()
     private let grdb = GRDBStorage()
+    private let grdbOptimized = GRDBOptimizedStorage()
     
     private var allServices: [any DatabaseService] {
-        [coreData, coreDataOptimized, swiftData,  swiftDataOptimized,  realm, grdb]
+        [coreData, coreDataOptimized, swiftData, swiftDataOptimized, realm, realmOptimized, grdb, grdbOptimized]
     }
     
     var allDatabaseNames: [String] {

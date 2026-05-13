@@ -11,7 +11,7 @@ import CoreDomain
 
 public actor RealmStorage: DatabaseService {
     
-    nonisolated public let name = "Realm"
+    nonisolated public let name = "Realm (Standard)"
     private let config: Realm.Configuration
     
     public init() {
