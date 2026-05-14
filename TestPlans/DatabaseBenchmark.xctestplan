@@ -1,0 +1,72 @@
+{
+  "configurations" : [
+    {
+      "id" : "1EA3E104-4807-411A-9919-6C37C1CAF103",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:DatabaseBenchmark.xcodeproj",
+      "identifier" : "CECD25512FB224470070B0F3",
+      "name" : "DatabaseBenchmark"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:DatabaseBenchmark.xcodeproj",
+        "identifier" : "CE8228612FB261B4005041C1",
+        "name" : "DatabaseBenchmarkTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DatabaseBenchmarkKit",
+        "identifier" : "StorageRealmTests",
+        "name" : "StorageRealmTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DatabaseBenchmarkKit",
+        "identifier" : "CoreDomainTests",
+        "name" : "CoreDomainTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DatabaseBenchmarkKit",
+        "identifier" : "StorageGRDBTests",
+        "name" : "StorageGRDBTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DatabaseBenchmarkKit",
+        "identifier" : "MeasurementLayerTests",
+        "name" : "MeasurementLayerTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DatabaseBenchmarkKit",
+        "identifier" : "StorageSwiftDataTests",
+        "name" : "StorageSwiftDataTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DatabaseBenchmarkKit",
+        "identifier" : "StorageCoreDataTests",
+        "name" : "StorageCoreDataTests"
+      }
+    }
+  ],
+  "version" : 1
+}

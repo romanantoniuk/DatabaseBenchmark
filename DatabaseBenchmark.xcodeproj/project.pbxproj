@@ -22,9 +22,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE5B23632FB611360005C699 /* DatabaseBenchmarkKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = DatabaseBenchmarkKit.xctestplan; path = ../DatabaseBenchmarkKit/DatabaseBenchmarkKit.xctestplan; sourceTree = "<group>"; };
 		CE8228622FB261B4005041C1 /* DatabaseBenchmarkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatabaseBenchmarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA68DF52FB30BE100A21A98 /* DatabaseBenchmarkKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DatabaseBenchmarkKit; sourceTree = "<group>"; };
 		CECD25522FB224470070B0F3 /* DatabaseBenchmark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DatabaseBenchmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDAF0062FB61F0300A6937D /* DatabaseBenchmark.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = DatabaseBenchmark.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -67,6 +69,7 @@
 				CECD25542FB224470070B0F3 /* DatabaseBenchmark */,
 				CE8228632FB261B4005041C1 /* DatabaseBenchmarkTests */,
 				CECD25622FB225450070B0F3 /* Frameworks */,
+				CEDAF0072FB6201E00A6937D /* TestPlans */,
 				CECD25532FB224470070B0F3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,6 +88,15 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CEDAF0072FB6201E00A6937D /* TestPlans */ = {
+			isa = PBXGroup;
+			children = (
+				CEDAF0062FB61F0300A6937D /* DatabaseBenchmark.xctestplan */,
+				CE5B23632FB611360005C699 /* DatabaseBenchmarkKit.xctestplan */,
+			);
+			path = TestPlans;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

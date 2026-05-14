@@ -145,6 +145,20 @@ final class BenchmarkDashboardViewModel {
                 _ = try await service.fetchAll()
             }
             results.append(fetchResult)
+            let updateResult = try await runner.runBenchmark(
+                databaseName: service.name,
+                operationName: "Update all items",
+                setup: {
+                    try await service.clearAll()
+                    try await service.insert(items: items)
+                },
+                teardown: {
+                    try await service.clearAll()
+                }
+            ) {
+                try await service.updateAll()
+            }
+            results.append(updateResult)
             if settings.enableConcurrencyTest {
                 let result = try await runner.runBenchmark(
                     databaseName: service.name,

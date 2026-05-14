@@ -43,6 +43,18 @@ public actor RealmOptimizedStorage: DatabaseService {
         }
     }
     
+    public func updateAll() async throws {
+        let results = realm.objects(RealmItem.self)
+        guard !results.isEmpty else {
+            return
+        }
+        try await realm.asyncWrite {
+            for item in results {
+                item.title = "Updated Item"
+            }
+        }
+    }
+    
     public func fetchAll() async throws -> [BenchmarkedItem] {
         let results = realm.objects(RealmItem.self)
         var benchmarkedItems: [BenchmarkedItem] = []

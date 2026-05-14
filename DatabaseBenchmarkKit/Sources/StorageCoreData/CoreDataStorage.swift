@@ -49,6 +49,17 @@ public actor CoreDataStorage: DatabaseService {
         }
     }
 
+    public func updateAll() async throws {
+        try await container.performBackgroundTask { context in
+            let request = NSFetchRequest<CDBenchmarkItem>(entityName: "CDBenchmarkItem")
+            let items = try context.fetch(request)
+            for item in items {
+                item.title = "Updated Item"
+            }
+            try context.save()
+        }
+    }
+
     public func fetchAll() async throws -> [BenchmarkedItem] {
         try await container.performBackgroundTask { context in
             let request = NSFetchRequest<CDBenchmarkItem>(entityName: "CDBenchmarkItem")

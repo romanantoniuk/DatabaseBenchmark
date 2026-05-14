@@ -36,6 +36,16 @@ public actor SwiftDataStorage: DatabaseService {
         try context.save()
     }
 
+    public func updateAll() async throws {
+        let context = ModelContext(container)
+        let descriptor = FetchDescriptor<SDItem>()
+        let items = try context.fetch(descriptor)
+        for item in items {
+            item.title = "Updated Item"
+        }
+        try context.save()
+    }
+
     public func fetchAll() async throws -> [BenchmarkedItem] {
         let context = ModelContext(container)
         let descriptor = FetchDescriptor<SDItem>()

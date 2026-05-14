@@ -1,0 +1,59 @@
+{
+  "configurations" : [
+    {
+      "id" : "A2F0029D-A36E-414F-ADC3-7A9629A6F72A",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StorageSwiftDataTests",
+        "name" : "StorageSwiftDataTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "MeasurementLayerTests",
+        "name" : "MeasurementLayerTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StorageGRDBTests",
+        "name" : "StorageGRDBTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StorageCoreDataTests",
+        "name" : "StorageCoreDataTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "CoreDomainTests",
+        "name" : "CoreDomainTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "StorageRealmTests",
+        "name" : "StorageRealmTests"
+      }
+    }
+  ],
+  "version" : 1
+}

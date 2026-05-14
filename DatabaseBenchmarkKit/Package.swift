@@ -66,7 +66,8 @@ let package = Package(
         .testTarget(
             name: "StorageCoreDataTests",
             dependencies: [
-                "StorageCoreData"
+                "StorageCoreData",
+                "StorageTestSupport"
             ]
         ),
         // MARK: - SwiftData
@@ -79,7 +80,8 @@ let package = Package(
         .testTarget(
             name: "StorageSwiftDataTests",
             dependencies: [
-                "StorageSwiftData"
+                "StorageSwiftData",
+                "StorageTestSupport"
             ]
         ),
         // MARK: - Realm
@@ -96,7 +98,8 @@ let package = Package(
         .testTarget(
             name: "StorageRealmTests",
             dependencies: [
-                "StorageRealm"
+                "StorageRealm",
+                "StorageTestSupport"
             ]
         ),
         // MARK: - GRDB
@@ -113,7 +116,15 @@ let package = Package(
         .testTarget(
             name: "StorageGRDBTests",
             dependencies: [
-                "StorageGRDB"
+                "StorageGRDB",
+                "StorageTestSupport"
+            ]
+        ),
+        // MARK: - Test Support
+        .target(
+            name: "StorageTestSupport",
+            dependencies: [
+                "CoreDomain"
             ]
         )
     ],

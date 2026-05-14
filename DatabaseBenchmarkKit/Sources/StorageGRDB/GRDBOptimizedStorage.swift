@@ -41,18 +41,22 @@ public actor GRDBOptimizedStorage: DatabaseService {
             return
         }
         try await dbPool.write { db in
-            try db.inTransaction {
-                let statement = try db.cachedStatement(sql: "INSERT INTO benchmark_items (id, title, timestamp, payload) VALUES (?, ?, ?, ?)")
-                for item in items {
-                    try statement.execute(arguments: [
-                        item.id.uuidString,
-                        item.title,
-                        item.timestamp,
-                        item.payload
-                    ])
-                }
-                return .commit
+            let statement = try db.cachedStatement(sql: "INSERT INTO benchmark_items (id, title, timestamp, payload) VALUES (?, ?, ?, ?)")
+            for item in items {
+                try statement.execute(arguments: [
+                    item.id.uuidString,
+                    item.title,
+                    item.timestamp,
+                    item.payload
+                ])
             }
+        }
+    }
+
+    public func updateAll() async throws {
+        try await dbPool.write { db in
+            let statement = try db.cachedStatement(sql: "UPDATE \(GRDBItem.databaseTableName) SET title = ?")
+            try statement.execute(arguments: ["Updated Item"])
         }
     }
 

@@ -57,7 +57,7 @@ struct BenchmarkSettingsView: View {
         } header: {
             Text("Benchmark")
         } footer: {
-            Text("Runs insert operations in parallel to stress test write contention.")
+            Text("Tests concurrent writes under load.")
         }
     }
     

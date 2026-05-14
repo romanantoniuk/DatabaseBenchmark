@@ -37,6 +37,18 @@ public actor RealmStorage: DatabaseService {
         }.value
     }
 
+    public func updateAll() async throws {
+        try await Task.detached {
+            let realm = try Realm(configuration: self.config)
+            let results = realm.objects(RealmItem.self)
+            try realm.write {
+                for item in results {
+                    item.title = "Updated Item"
+                }
+            }
+        }.value
+    }
+
     public func fetchAll() async throws -> [BenchmarkedItem] {
         try await Task.detached {
             let realm = try Realm(configuration: self.config)

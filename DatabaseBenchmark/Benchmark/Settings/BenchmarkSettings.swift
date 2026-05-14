@@ -11,22 +11,18 @@ import MeasurementLayer
 @Observable
 final class BenchmarkSettings {
     
-    // MARK: - Databases
     var enabledDatabases: Set<String> = []
     
-    // MARK: - Benchmark
     var itemsCount = 10000
     var enableConcurrencyTest = true
     var concurrentTasks = 10
     
-    // MARK: - Measurement
     var iterations = 5
     var warmupIterations = 2
     var pauseBetweenRunsMS = 100
     var memoryStrategy: MemoryStrategyOption = .peak
     var samplingIntervalMS = 5
     
-    // MARK: - UI
     var visibleMetrics: Set<MemoryMetric> = [.physFootprint, .residentSize]
     
     var runnerConfiguration: MeasurementRunner.Configuration {

@@ -36,17 +36,16 @@ public actor MeasurementRunner {
             results.append(result)
             try await pause()
         }
-        let aggregated = aggregate(results)
+        let summary = aggregate(results)
         return PerformanceResult(
             databaseName: databaseName,
             operationName: operationName,
-            durationInSeconds: aggregated.duration,
-            physFootprintDeltaMB: aggregated.physFootprintDelta,
-            residentSizeDeltaMB: aggregated.residentSizeDelta
+            durationInSeconds: summary.duration,
+            physFootprintDeltaMB: summary.physFootprintDelta,
+            residentSizeDeltaMB: summary.residentSizeDelta
         )
     }
     
-    // MARK: - Running
     private func measure(_ operation: () async throws -> Void) async throws -> RunResult {
         switch configuration.memoryStrategy {
         case .delta:
@@ -105,7 +104,6 @@ public actor MeasurementRunner {
         return sorted.count.isMultiple(of: 2) ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
     }
     
-    // MARK: Memory
     nonisolated func currentMemoryMB() -> Double {
         var info = task_vm_info_data_t()
         var count = mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size / 4)
@@ -120,7 +118,6 @@ public actor MeasurementRunner {
         return Double(info.phys_footprint) / 1_048_576
     }
     
-    // MARK: Helpers
     private func drainMemory() async {
         autoreleasepool { }
         await Task.yield()
@@ -135,7 +132,6 @@ public actor MeasurementRunner {
     
 }
 
-// MARK: - Configuration
 extension MeasurementRunner {
     
     public struct Configuration: Sendable {
@@ -160,14 +156,12 @@ extension MeasurementRunner {
 
 }
 
-// MARK: - Extensions
 fileprivate extension Duration {
     
     var seconds: Double { Double(components.seconds) + Double(components.attoseconds) / 1e18 }
     
 }
 
-// MARK: - Helper structs
 fileprivate struct RunResult {
     
     let duration: Double

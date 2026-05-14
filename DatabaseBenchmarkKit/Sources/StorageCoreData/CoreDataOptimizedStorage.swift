@@ -60,6 +60,16 @@ public actor CoreDataOptimizedStorage: DatabaseService {
         }
     }
 
+    public func updateAll() async throws {
+        try await container.performBackgroundTask { context in
+            let batchUpdate = NSBatchUpdateRequest(entityName: "CDBenchmarkItem")
+            batchUpdate.propertiesToUpdate = ["title": "Updated Item"]
+            batchUpdate.resultType = .statusOnlyResultType
+            try context.execute(batchUpdate)
+            context.reset()
+        }
+    }
+
     public func fetchAll() async throws -> [BenchmarkedItem] {
         try await container.performBackgroundTask { context in
             let request = NSFetchRequest<CDBenchmarkItem>(entityName: "CDBenchmarkItem")

@@ -39,6 +39,12 @@ public actor GRDBStorage: DatabaseService {
         }
     }
 
+    public func updateAll() async throws {
+        try await dbQueue.write { db in
+            try db.execute(sql: "UPDATE \(GRDBItem.databaseTableName) SET title = ?", arguments: ["Updated Item"])
+        }
+    }
+
     public func fetchAll() async throws -> [BenchmarkedItem] {
         try await dbQueue.read { db in
             let records = try GRDBItem.fetchAll(db)

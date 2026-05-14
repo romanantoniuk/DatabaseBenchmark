@@ -5,26 +5,32 @@
 //  Created by Roman Antoniuk on 12.05.2026.
 //
 
+import Foundation
 import Testing
 @testable import StorageRealm
 import CoreDomain
+import StorageTestSupport
 
 @Suite(.serialized)
 struct RealmStorageTests {
     
-    let sut = RealmStorage()
+    struct StorageTestCase {
+        let storage: any DatabaseService
+        let expectedName: String
+    }
     
-    @Test("Test Realm Insert and Clear")
-    func testInsertAndClear() async throws {
-        try await sut.setup()
-        try await sut.clearAll()
-        let items = [BenchmarkedItem(title: "Realm 1"), BenchmarkedItem(title: "Realm 2")]
-        try await sut.insert(items: items)
-        let fetchedAfterInsert = try await sut.fetchAll()
-        #expect(fetchedAfterInsert.count == 2)
-        try await sut.clearAll()
-        let fetchedAfterClear = try await sut.fetchAll()
-        #expect(fetchedAfterClear.isEmpty)
+    @Test(
+        "Realm storage conforms to DatabaseService contract",
+        arguments: [
+            StorageTestCase(storage: RealmStorage(), expectedName: "Realm (Standard)"),
+            StorageTestCase(storage: RealmOptimizedStorage(), expectedName: "Realm (Optimized)")
+        ]
+    )
+    func testStorageContract(testCase: StorageTestCase) async throws {
+        try await DatabaseContract.verify(
+            storage: testCase.storage,
+            expectedName: testCase.expectedName
+        )
     }
     
 }

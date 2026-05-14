@@ -41,7 +41,6 @@ struct BenchmarkDashboardView: View {
         }
     }
     
-    // MARK: - Content
     @ViewBuilder
     private var contentView: some View {
         if viewModel.showEmptyState {
@@ -93,7 +92,6 @@ struct BenchmarkDashboardView: View {
         }
     }
     
-    // MARK: - Run button
     private var runButton: some View {
         Button {
             Task { await viewModel.runAllTests() }

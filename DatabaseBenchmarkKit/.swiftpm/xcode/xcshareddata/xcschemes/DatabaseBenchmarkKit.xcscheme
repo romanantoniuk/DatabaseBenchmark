@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2640"
+   LastUpgradeVersion = "2650"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CECD25512FB224470070B0F3"
-               BuildableName = "DatabaseBenchmark.app"
-               BlueprintName = "DatabaseBenchmark"
-               ReferencedContainer = "container:DatabaseBenchmark.xcodeproj">
+               BlueprintIdentifier = "DatabaseBenchmarkKit"
+               BuildableName = "DatabaseBenchmarkKit"
+               BlueprintName = "DatabaseBenchmarkKit"
+               ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -30,23 +30,10 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:DatabaseBenchmark.xctestplan"
+            reference = "container:DatabaseBenchmarkKit.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CE8228612FB261B4005041C1"
-               BuildableName = "DatabaseBenchmarkTests.xctest"
-               BlueprintName = "DatabaseBenchmarkTests"
-               ReferencedContainer = "container:DatabaseBenchmark.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -59,16 +46,6 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       queueDebuggingEnableBacktraceRecording = "Yes">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CECD25512FB224470070B0F3"
-            BuildableName = "DatabaseBenchmark.app"
-            BlueprintName = "DatabaseBenchmark"
-            ReferencedContainer = "container:DatabaseBenchmark.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -76,16 +53,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CECD25512FB224470070B0F3"
-            BuildableName = "DatabaseBenchmark.app"
-            BlueprintName = "DatabaseBenchmark"
-            ReferencedContainer = "container:DatabaseBenchmark.xcodeproj">
+            BlueprintIdentifier = "DatabaseBenchmarkKit"
+            BuildableName = "DatabaseBenchmarkKit"
+            BlueprintName = "DatabaseBenchmarkKit"
+            ReferencedContainer = "container:">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

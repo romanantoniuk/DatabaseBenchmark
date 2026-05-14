@@ -5,23 +5,32 @@
 //  Created by Roman Antoniuk on 12.05.2026.
 //
 
+import Foundation
 import Testing
 @testable import StorageGRDB
 import CoreDomain
+import StorageTestSupport
 
 @Suite(.serialized)
 struct GRDBStorageTests {
     
-    let sut = GRDBStorage()
+    struct StorageTestCase {
+        let storage: any DatabaseService
+        let expectedName: String
+    }
     
-    @Test("Test GRDB Database integrity")
-    func testDatabaseIntegrity() async throws {
-        try await sut.setup()
-        try await sut.clearAll()
-        let item = BenchmarkedItem(title: "GRDB Fast")
-        try await sut.insert(items: [item])
-        let fetched = try await sut.fetchAll()
-        #expect(fetched.count == 1)
+    @Test(
+        "GRDB storage conforms to DatabaseService contract",
+        arguments: [
+            StorageTestCase(storage: GRDBStorage(), expectedName: "GRDB (SQLite) (Standard)"),
+            StorageTestCase(storage: GRDBOptimizedStorage(), expectedName: "GRDB (SQLite) (Optimized)")
+        ]
+    )
+    func testStorageContract(testCase: StorageTestCase) async throws {
+        try await DatabaseContract.verify(
+            storage: testCase.storage,
+            expectedName: testCase.expectedName
+        )
     }
     
 }

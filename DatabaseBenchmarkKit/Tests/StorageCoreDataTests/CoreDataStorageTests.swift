@@ -5,43 +5,32 @@
 //  Created by Roman Antoniuk on 12.05.2026.
 //
 
+import Foundation
 import Testing
 @testable import StorageCoreData
 import CoreDomain
+import StorageTestSupport
 
 @Suite(.serialized)
-struct CoreDataStorageTests {
+struct SwiftDataStorageTests {
     
-    let sut = CoreDataStorage()
+    struct StorageTestCase {
+        let storage: any DatabaseService
+        let expectedName: String
+    }
     
-    @Test("Test Setup and Insert")
-    func testInsertAndFetch() async throws {
-        try await sut.setup()
-        try await sut.clearAll()
-        let testItems = [
-            BenchmarkedItem(title: "Item 1", payloadSize: 10),
-            BenchmarkedItem(title: "Item 2", payloadSize: 10)
+    @Test(
+        "SwiftData storage conforms to DatabaseService contract",
+        arguments: [
+            StorageTestCase(storage: CoreDataStorage(), expectedName: "Core Data (Standard)"),
+            StorageTestCase(storage: CoreDataOptimizedStorage(), expectedName: "Core Data (Optimized)")
         ]
-        // Action
-        try await sut.insert(items: testItems)
-        let fetchedItems = try await sut.fetchAll()
-        // Assert
-        #expect(fetchedItems.count == 2, "Database should contain exactly 2 items after insertion")
-        // Checking whether the data was saved correctly
-        let firstItem = try #require(fetchedItems.first(where: { $0.title == "Item 1" }))
-        #expect(firstItem.payload.count == 10)
+    )
+    func testStorageContract(testCase: StorageTestCase) async throws {
+        try await DatabaseContract.verify(
+            storage: testCase.storage,
+            expectedName: testCase.expectedName
+        )
     }
-    
-    @Test("Test Clear All")
-    func testClearAll() async throws {
-        try await sut.setup()
-        // Add element
-        let item = BenchmarkedItem(title: "To be deleted", payloadSize: 5)
-        try await sut.insert(items: [item])
-        // Remove all
-        try await sut.clearAll()
-        let fetchedItems = try await sut.fetchAll()
-        #expect(fetchedItems.isEmpty, "Database should be empty after clearAll() is called")
-    }
-    
+
 }
