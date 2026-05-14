@@ -6,7 +6,7 @@ A practical R&D project to see how different local databases actually perform on
 - **Core Data (Standard)** (classic NSManagedObject batch insert)
 - **Core Data (Optimized)** (streaming SQLite writes via `NSBatchInsertRequest`)
 - **SwiftData (Standard)** (default `@Model` overhead)
-- **SwiftData (Optimized)** (memory-efficient batching using isolated `ModelContext`s)
+- **SwiftData (Optimized)** (memory-efficient batching using isolated `ModelContext` instances)
 - **Realm (Standard)** (v20, local-only)
 - **Realm (Optimized)** (actor-isolated Realm with async writes)
 - **GRDB (Standard)** (SQLite via Swift structs)
