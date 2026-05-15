@@ -34,7 +34,7 @@ struct BenchmarkSettingsView: View {
         } header: {
             Text("Target Databases")
         } footer: {
-            Text("Select at least one database to run the benchmark against.")
+            Text("Choose databases to include.")
         }
     }
     
@@ -46,8 +46,10 @@ struct BenchmarkSettingsView: View {
                         .tag(count)
                 }
             }
-            Toggle("Concurrent test", isOn: $settings.enableConcurrencyTest)
-            if settings.enableConcurrencyTest {
+            ForEach(BenchmarkOperation.allCases) { operation in
+                Toggle(operation.title, isOn: settings.binding(for: operation))
+            }
+            if settings.enabledOperations.contains(.concurrentInsert) {
                 Stepper(
                     "Tasks: \(settings.concurrentTasks)",
                     value: $settings.concurrentTasks,
@@ -57,7 +59,7 @@ struct BenchmarkSettingsView: View {
         } header: {
             Text("Benchmark")
         } footer: {
-            Text("Tests concurrent writes under load.")
+            Text("Choose the operations to measure.")
         }
     }
     

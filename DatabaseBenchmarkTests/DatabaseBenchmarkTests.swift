@@ -29,6 +29,8 @@ struct DatabaseBenchmarkTests {
         ])
         #expect(viewModel.databaseNames == viewModel.allDatabaseNames)
         #expect(viewModel.showEmptyState)
+        #expect(viewModel.canRunBenchmark)
+        #expect(viewModel.configurationIssues.isEmpty)
         #expect(!viewModel.hasError)
     }
     
@@ -44,26 +46,57 @@ struct DatabaseBenchmarkTests {
         #expect(viewModel.itemsConfigText == 50_000.formatted())
         #expect(viewModel.iterationsConfigText == "7 (warmup: 3)")
         #expect(viewModel.memoryStrategyConfigText == "Delta")
+        #expect(viewModel.operationsConfigText == "Insert, Fetch, Update, Concurrent")
+        viewModel.settings.enabledOperations.remove(.fetch)
+        viewModel.settings.enabledOperations.remove(.concurrentInsert)
+        #expect(viewModel.operationsConfigText == "Insert, Update")
+        viewModel.settings.enabledOperations.remove(.insert)
+        viewModel.settings.enabledOperations.remove(.update)
+        #expect(viewModel.operationsConfigText == "None")
         #expect(viewModel.activeMetrics == [.residentSize])
     }
     
-    @Test("BenchmarkSettings metric binding keeps at least one metric selected")
+    @Test("ViewModel reports missing configuration")
+    func testConfigurationIssues() {
+        let viewModel = BenchmarkDashboardViewModel()
+        viewModel.settings.enabledDatabases.removeAll()
+        viewModel.settings.enabledOperations.removeAll()
+        viewModel.settings.visibleMetrics.removeAll()
+        
+        #expect(!viewModel.canRunBenchmark)
+        #expect(viewModel.configurationIssues == [
+            "Select at least one database.",
+            "Select at least one operation.",
+            "Select at least one memory metric."
+        ])
+    }
+    
+    @Test("BenchmarkSettings operation binding allows empty selection")
+    func testOperationBinding() {
+        let settings = BenchmarkSettings()
+        let insertBinding = settings.binding(for: .insert)
+        
+        #expect(insertBinding.wrappedValue)
+        insertBinding.wrappedValue = false
+        #expect(!settings.enabledOperations.contains(.insert))
+        insertBinding.wrappedValue = true
+        #expect(settings.enabledOperations.contains(.insert))
+    }
+    
+    @Test("BenchmarkSettings metric binding allows empty selection")
     func testMetricBinding() {
         let settings = BenchmarkSettings()
         let physBinding = settings.binding(for: .physFootprint)
         let residentBinding = settings.binding(for: .residentSize)
         
-        #expect(physBinding.wrappedValue)
         physBinding.wrappedValue = false
-        #expect(!settings.visibleMetrics.contains(.physFootprint))
-        #expect(settings.visibleMetrics == [.residentSize])
         residentBinding.wrappedValue = false
-        #expect(settings.visibleMetrics == [.residentSize])
+        #expect(settings.visibleMetrics.isEmpty)
         physBinding.wrappedValue = true
-        #expect(settings.visibleMetrics == [.physFootprint, .residentSize])
+        #expect(settings.visibleMetrics == [.physFootprint])
     }
     
-    @Test("BenchmarkSettings database binding keeps at least one database selected")
+    @Test("BenchmarkSettings database binding allows empty selection")
     func testDatabaseBinding() {
         let settings = BenchmarkSettings()
         settings.enabledDatabases = ["A", "B"]
@@ -71,18 +104,17 @@ struct DatabaseBenchmarkTests {
         let bBinding = settings.binding(forDatabase: "B")
         let cBinding = settings.binding(forDatabase: "C")
         
-        #expect(aBinding.wrappedValue)
         aBinding.wrappedValue = false
-        #expect(settings.enabledDatabases == ["B"])
         bBinding.wrappedValue = false
-        #expect(settings.enabledDatabases == ["B"])
+        #expect(settings.enabledDatabases.isEmpty)
         cBinding.wrappedValue = true
-        #expect(settings.enabledDatabases == ["B", "C"])
+        #expect(settings.enabledDatabases == ["C"])
     }
     
     @Test("BenchmarkSettings creates runner configuration")
     func testRunnerConfiguration() {
         let settings = BenchmarkSettings()
+        #expect(settings.enabledOperations == Set(BenchmarkOperation.allCases))
         settings.iterations = 0
         settings.warmupIterations = -1
         settings.pauseBetweenRunsMS = 250

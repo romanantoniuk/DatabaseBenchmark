@@ -14,7 +14,7 @@ final class BenchmarkSettings {
     var enabledDatabases: Set<String> = []
     
     var itemsCount = 10000
-    var enableConcurrencyTest = true
+    var enabledOperations = Set(BenchmarkOperation.allCases)
     var concurrentTasks = 10
     
     var iterations = 5
@@ -36,6 +36,21 @@ final class BenchmarkSettings {
         )
     }
     
+    func binding(for operation: BenchmarkOperation) -> Binding<Bool> {
+        Binding(
+            get: {
+                self.enabledOperations.contains(operation)
+            },
+            set: { isEnabled in
+                if isEnabled {
+                    self.enabledOperations.insert(operation)
+                } else {
+                    self.enabledOperations.remove(operation)
+                }
+            }
+        )
+    }
+    
     func binding(for metric: MemoryMetric) -> Binding<Bool> {
         Binding(
             get: {
@@ -44,7 +59,7 @@ final class BenchmarkSettings {
             set: { isEnabled in
                 if isEnabled {
                     self.visibleMetrics.insert(metric)
-                } else if self.visibleMetrics.count > 1 {
+                } else {
                     self.visibleMetrics.remove(metric)
                 }
             }
@@ -59,7 +74,7 @@ final class BenchmarkSettings {
             set: { isEnabled in
                 if isEnabled {
                     self.enabledDatabases.insert(name)
-                } else if self.enabledDatabases.count > 1 {
+                } else {
                     self.enabledDatabases.remove(name)
                 }
             }

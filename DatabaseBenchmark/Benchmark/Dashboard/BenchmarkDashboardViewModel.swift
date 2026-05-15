@@ -53,6 +53,31 @@ final class BenchmarkDashboardViewModel {
         settings.memoryStrategy.rawValue
     }
     
+    var operationsConfigText: String {
+        let names = BenchmarkOperation.allCases.compactMap { operation in
+            settings.enabledOperations.contains(operation) ? operation.summaryTitle : nil
+        }
+        return names.isEmpty ? "None" : names.joined(separator: ", ")
+    }
+    
+    var configurationIssues: [String] {
+        var issues: [String] = []
+        if settings.enabledDatabases.isEmpty {
+            issues.append("Select at least one database.")
+        }
+        if settings.enabledOperations.isEmpty {
+            issues.append("Select at least one operation.")
+        }
+        if settings.visibleMetrics.isEmpty {
+            issues.append("Select at least one memory metric.")
+        }
+        return issues
+    }
+    
+    var canRunBenchmark: Bool {
+        configurationIssues.isEmpty
+    }
+    
     var groupedResults: [(databaseName: String, results: [PerformanceResult])] {
         databaseNames.compactMap { name in
             let dbResults = results.filter { $0.databaseName == name }
@@ -90,8 +115,9 @@ final class BenchmarkDashboardViewModel {
     }
     
     func runAllTests() async {
-        guard !isRunning else {
-            return }
+        guard !isRunning, canRunBenchmark else {
+            return
+        }
         isRunning = true
         errorMessage = nil
         results.removeAll()
@@ -118,48 +144,54 @@ final class BenchmarkDashboardViewModel {
                     try? await service.clearAll()
                 }
             }
-            let insertResult = try await runner.runBenchmark(
-                databaseName: service.name,
-                operationName: "Insert \(settings.itemsCount) items",
-                setup: {
-                    try await service.clearAll()
-                },
-                teardown: {
-                    try await service.clearAll()
-                }
-            ) {
-                try await service.insert(items: items)
-            }
-            results.append(insertResult)
-            let fetchResult = try await runner.runBenchmark(
-                databaseName: service.name,
-                operationName: "Fetch all items",
-                setup: {
-                    try await service.clearAll()
+            if settings.enabledOperations.contains(.insert) {
+                let insertResult = try await runner.runBenchmark(
+                    databaseName: service.name,
+                    operationName: "Insert \(settings.itemsCount) items",
+                    setup: {
+                        try await service.clearAll()
+                    },
+                    teardown: {
+                        try await service.clearAll()
+                    }
+                ) {
                     try await service.insert(items: items)
-                },
-                teardown: {
-                    try await service.clearAll()
                 }
-            ) {
-                _ = try await service.fetchAll()
+                results.append(insertResult)
             }
-            results.append(fetchResult)
-            let updateResult = try await runner.runBenchmark(
-                databaseName: service.name,
-                operationName: "Update all items",
-                setup: {
-                    try await service.clearAll()
-                    try await service.insert(items: items)
-                },
-                teardown: {
-                    try await service.clearAll()
+            if settings.enabledOperations.contains(.fetch) {
+                let fetchResult = try await runner.runBenchmark(
+                    databaseName: service.name,
+                    operationName: "Fetch all items",
+                    setup: {
+                        try await service.clearAll()
+                        try await service.insert(items: items)
+                    },
+                    teardown: {
+                        try await service.clearAll()
+                    }
+                ) {
+                    _ = try await service.fetchAll()
                 }
-            ) {
-                try await service.updateAll()
+                results.append(fetchResult)
             }
-            results.append(updateResult)
-            if settings.enableConcurrencyTest {
+            if settings.enabledOperations.contains(.update) {
+                let updateResult = try await runner.runBenchmark(
+                    databaseName: service.name,
+                    operationName: "Update all items",
+                    setup: {
+                        try await service.clearAll()
+                        try await service.insert(items: items)
+                    },
+                    teardown: {
+                        try await service.clearAll()
+                    }
+                ) {
+                    try await service.updateAll()
+                }
+                results.append(updateResult)
+            }
+            if settings.enabledOperations.contains(.concurrentInsert) {
                 let result = try await runner.runBenchmark(
                     databaseName: service.name,
                     operationName: "Concurrent Insert (\(settings.concurrentTasks) tasks)",

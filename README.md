@@ -20,7 +20,7 @@ A practical R&D project to see how different local databases actually perform on
 ## Under the hood
 - **Swift 6:** Strict concurrency enabled (`actor`, `Sendable`).
 - **Modular Architecture:** Built as an SPM umbrella package (`DatabaseBenchmarkKit`). Dependencies like Realm and GRDB are isolated and don't pollute the main app target.
-- **Data-Driven UI:** SwiftUI + Charts to visualize the results dynamically. Target databases can be toggled on/off on the fly to isolate specific tests.
+- **Data-Driven UI:** SwiftUI + Charts to visualize the results dynamically. Databases, operations, and memory metrics can be toggled on/off to isolate specific tests.
 - **Optimized Variants:** Each database can expose both an idiomatic baseline and a lower-level tuned implementation for apples-to-apples comparison.
 - **Storage Contracts:** Standard and optimized adapters implement the same insert, fetch, update, and cleanup API for direct comparison.
 
@@ -38,4 +38,4 @@ A practical R&D project to see how different local databases actually perform on
 - **App Logic:** View model metadata, settings bindings, memory strategy mapping, and formatting helpers are covered in the app's dedicated test target.
 
 ## Setup
-Just open the project in Xcode 16+, wait for SPM to resolve Realm and GRDB, and run it. You can tweak the number of items, iterations, concurrent threads, and active databases directly in the app's settings UI.
+Just open the project in Xcode 16+, wait for SPM to resolve Realm and GRDB, and run it. You can tweak the number of items, iterations, measured operations, memory metrics, concurrent threads, and active databases directly in the app's settings UI.

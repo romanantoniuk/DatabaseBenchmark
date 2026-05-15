@@ -16,7 +16,7 @@ struct BenchmarkDashboardView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 contentView
-                runButton
+                footerButton
             }
             .navigationTitle("DB Comparison")
             .toolbar {
@@ -43,7 +43,9 @@ struct BenchmarkDashboardView: View {
     
     @ViewBuilder
     private var contentView: some View {
-        if viewModel.showEmptyState {
+        if !viewModel.canRunBenchmark {
+            configurationRequiredView
+        } else if viewModel.showEmptyState {
             emptyStateView
         } else {
             resultsList
@@ -56,6 +58,19 @@ struct BenchmarkDashboardView: View {
             systemImage: "chart.bar.xaxis",
             description: Text("Configure settings and tap Run benchmark")
         )
+    }
+    
+    private var configurationRequiredView: some View {
+        ContentUnavailableView {
+            Label("Configuration required", systemImage: "slider.horizontal.3")
+        } description: {
+            Text(viewModel.configurationIssues.joined(separator: "\n"))
+        } actions: {
+            Button("Open Settings") {
+                showSettings = true
+            }
+            .buttonStyle(.borderedProminent)
+        }
     }
     
     private var resultsList: some View {
@@ -86,32 +101,36 @@ struct BenchmarkDashboardView: View {
         Section {
             LabeledContent("Items", value: viewModel.itemsConfigText)
             LabeledContent("Iterations", value: viewModel.iterationsConfigText)
+            LabeledContent("Operations", value: viewModel.operationsConfigText)
             LabeledContent("Memory", value: viewModel.memoryStrategyConfigText)
         } header: {
             Text("Configuration")
         }
     }
     
-    private var runButton: some View {
-        Button {
-            Task { await viewModel.runAllTests() }
-        } label: {
-            Group {
-                if viewModel.isRunning {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                        Text("Analyzing...")
+    @ViewBuilder
+    private var footerButton: some View {
+        if viewModel.canRunBenchmark {
+            Button {
+                Task { await viewModel.runAllTests() }
+            } label: {
+                Group {
+                    if viewModel.isRunning {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                            Text("Analyzing...")
+                        }
+                    } else {
+                        Text("Run benchmark")
+                            .frame(maxWidth: .infinity)
                     }
-                } else {
-                    Text("Run benchmark")
-                        .frame(maxWidth: .infinity)
                 }
             }
+            .disabled(viewModel.isRunning)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .padding()
         }
-        .disabled(viewModel.isRunning)
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
-        .padding()
     }
     
 }
