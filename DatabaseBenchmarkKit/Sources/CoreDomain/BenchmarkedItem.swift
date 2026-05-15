@@ -16,10 +16,14 @@ public struct BenchmarkedItem: Codable, Sendable, Identifiable, Equatable {
     public let payload: Data
     
     public init(id: UUID = UUID(), title: String, timestamp: Date = Date(), payloadSize: Int = 1024) {
+        self.init(id: id, title: title, timestamp: timestamp, payload: Data(count: payloadSize))
+    }
+
+    public init(id: UUID = UUID(), title: String, timestamp: Date = Date(), payload: Data) {
         self.id = id
         self.title = title
         self.timestamp = timestamp
-        self.payload = Data(count: payloadSize)
+        self.payload = payload
     }
     
 }

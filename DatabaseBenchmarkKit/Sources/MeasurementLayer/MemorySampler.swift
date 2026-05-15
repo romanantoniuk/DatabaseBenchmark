@@ -20,11 +20,15 @@ actor MemorySampler {
 
     func run() async {
         while !Task.isCancelled {
-            let delta = MemorySnapshot.current().delta(from: baseline)
-            if delta.physFootprint > peak.physFootprint || delta.residentSize > peak.residentSize {
-                peak = MemorySnapshot(physFootprint: max(peak.physFootprint, delta.physFootprint), residentSize: max(peak.residentSize, delta.residentSize))
-            }
+            sample()
             try? await Task.sleep(for: interval)
+        }
+    }
+
+    func sample() {
+        let delta = MemorySnapshot.current().peakDelta(from: baseline)
+        if delta.physFootprint > peak.physFootprint || delta.residentSize > peak.residentSize {
+            peak = MemorySnapshot(physFootprint: max(peak.physFootprint, delta.physFootprint), residentSize: max(peak.residentSize, delta.residentSize))
         }
     }
 

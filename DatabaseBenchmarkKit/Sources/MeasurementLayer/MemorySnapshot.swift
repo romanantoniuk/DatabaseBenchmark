@@ -18,7 +18,12 @@ struct MemorySnapshot {
     }
 
     func delta(from baseline: MemorySnapshot) -> MemorySnapshot {
-        MemorySnapshot(physFootprint: max(0, physFootprint - baseline.physFootprint), residentSize:  max(0, residentSize  - baseline.residentSize))
+        MemorySnapshot(physFootprint: physFootprint - baseline.physFootprint, residentSize: residentSize - baseline.residentSize)
+    }
+
+    func peakDelta(from baseline: MemorySnapshot) -> MemorySnapshot {
+        let delta = delta(from: baseline)
+        return MemorySnapshot(physFootprint: max(0, delta.physFootprint), residentSize: max(0, delta.residentSize))
     }
 
     // phys_footprint: heap + anonymous. Does not count file-backed mmap.

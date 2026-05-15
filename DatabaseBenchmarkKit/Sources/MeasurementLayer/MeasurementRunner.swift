@@ -68,6 +68,7 @@ public actor MeasurementRunner {
     private func measureWithPeak(_ operation: () async throws -> Void, samplingInterval: Duration) async throws -> RunResult {
         let baseline = MemorySnapshot.current()
         let sampler = MemorySampler(baseline: baseline, interval: samplingInterval)
+        await sampler.sample()
         let samplerTask = Task.detached(priority: .utility) {
             await sampler.run()
         }
@@ -80,6 +81,7 @@ public actor MeasurementRunner {
                 operationError = error
             }
         }
+        await sampler.sample()
         samplerTask.cancel()
         let peak = await sampler.peak
         if let error = operationError {

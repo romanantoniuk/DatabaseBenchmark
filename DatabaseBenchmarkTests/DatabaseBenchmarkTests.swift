@@ -145,8 +145,9 @@ struct DatabaseBenchmarkTests {
     @Test("MemoryStrategyOption maps UI options to measurement strategies")
     func testMemoryStrategyOptionMapping() {
         #expect(MemoryStrategyOption.delta.id == .delta)
-        #expect(MemoryStrategyOption.delta.helpText == "Before/after diff. Fast but may miss spikes.")
-        #expect(MemoryStrategyOption.peak.helpText == "Samples memory during execution.")
+        #expect(MemoryStrategyOption.delta.helpText == "Signed before/after diff. Fast but may miss spikes.")
+        #expect(MemoryStrategyOption.peak.rawValue == "Sampled Peak")
+        #expect(MemoryStrategyOption.peak.helpText == "Samples peak increase during execution.")
         
         if case .delta = MemoryStrategyOption.delta.toMeasurementStrategy(samplingIntervalMS: 5) {
             #expect(true)
@@ -164,15 +165,21 @@ struct DatabaseBenchmarkTests {
     func testPerformanceResultFormatting() {
         let fast = PerformanceResult(databaseName: "DB", operationName: "Fetch", durationInSeconds: 0.1234, physFootprintDeltaMB: 0.001, residentSizeDeltaMB: 2.5)
         let slow = PerformanceResult(databaseName: "DB", operationName: "Insert", durationInSeconds: 1.23456, physFootprintDeltaMB: 1.25, residentSizeDeltaMB: 0.001)
+        let released = PerformanceResult(databaseName: "DB", operationName: "Update", durationInSeconds: 0.5, physFootprintDeltaMB: -1.25, residentSizeDeltaMB: -0.5)
+        let large = PerformanceResult(databaseName: "DB", operationName: "Insert", durationInSeconds: 0.5, physFootprintDeltaMB: 2048, residentSizeDeltaMB: 0)
         
         #expect(fast.formattedDuration == "123.4 ms")
         #expect(slow.formattedDuration == "1.2346 s")
         #expect(fast.memoryValue(for: .physFootprint) == 0.001)
         #expect(fast.memoryValue(for: .residentSize) == 2.5)
-        #expect(fast.formattedMemory(for: .physFootprint) == "heap: <0.01 MB")
+        #expect(fast.formattedMemory(for: .physFootprint) == "heap: +1.0 KB")
         #expect(fast.formattedMemory(for: .residentSize) == "res: +2.50 MB")
         #expect(slow.formattedMemory(for: .physFootprint) == "heap: +1.25 MB")
-        #expect(slow.formattedMemory(for: .residentSize) == "res: <0.01 MB")
+        #expect(slow.formattedMemory(for: .residentSize) == "res: +1.0 KB")
+        #expect(released.formattedMemory(for: .physFootprint) == "heap: -1.25 MB")
+        #expect(released.formattedMemory(for: .residentSize) == "res: -512.0 KB")
+        #expect(large.formattedMemory(for: .physFootprint) == "heap: +2.00 GB")
+        #expect(large.formattedMemory(for: .residentSize) == "res: 0 B")
     }
     
     @Test("Integer millisecond formatting covers all branches")

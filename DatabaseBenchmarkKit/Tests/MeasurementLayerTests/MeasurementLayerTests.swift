@@ -26,8 +26,8 @@ import Testing
         #expect(result.databaseName == "MockDB")
         #expect(result.operationName == "MockOp")
         #expect(result.durationInSeconds > 0)
-        #expect(result.physFootprintDeltaMB >= 0)
-        #expect(result.residentSizeDeltaMB >= 0)
+        #expect(result.physFootprintDeltaMB.isFinite)
+        #expect(result.residentSizeDeltaMB.isFinite)
     }
     
     @Test("MeasurementRunner captures peak execution")
@@ -104,15 +104,21 @@ import Testing
         #expect(MeasurementRunner.Configuration.precise.iterations == 10)
     }
     
-    @Test("MemorySnapshot clamps negative deltas")
+    @Test("MemorySnapshot separates signed delta from peak delta")
     func testMemorySnapshotDelta() {
         let baseline = MemorySnapshot(physFootprint: 10, residentSize: 20)
-        let increased = MemorySnapshot(physFootprint: 12.5, residentSize: 23.25).delta(from: baseline)
-        let decreased = MemorySnapshot(physFootprint: 5, residentSize: 7).delta(from: baseline)
-        #expect(increased.physFootprint == 2.5)
-        #expect(increased.residentSize == 3.25)
-        #expect(decreased.physFootprint == 0)
-        #expect(decreased.residentSize == 0)
+        let increased = MemorySnapshot(physFootprint: 12.5, residentSize: 23.25)
+        let decreased = MemorySnapshot(physFootprint: 5, residentSize: 7)
+        let signedIncrease = increased.delta(from: baseline)
+        let signedDecrease = decreased.delta(from: baseline)
+        let peakDecrease = decreased.peakDelta(from: baseline)
+        
+        #expect(signedIncrease.physFootprint == 2.5)
+        #expect(signedIncrease.residentSize == 3.25)
+        #expect(signedDecrease.physFootprint == -5)
+        #expect(signedDecrease.residentSize == -13)
+        #expect(peakDecrease.physFootprint == 0)
+        #expect(peakDecrease.residentSize == 0)
         #expect(MemorySnapshot.current().physFootprint >= 0)
         #expect(MemorySnapshot.current().residentSize >= 0)
     }

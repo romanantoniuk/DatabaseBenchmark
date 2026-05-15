@@ -27,9 +27,10 @@ public struct DatabaseContract {
         let firstID = UUID()
         let secondID = UUID()
         let timestamp = Date(timeIntervalSince1970: 400)
+        let payload = Data((0..<37).map { _ in UInt8.random(in: 0...255) })
         let items = [
             BenchmarkedItem(id: firstID, title: "Test Item 1", timestamp: timestamp, payloadSize: 10),
-            BenchmarkedItem(id: secondID, title: "Test Item 2", timestamp: timestamp.addingTimeInterval(1), payloadSize: 20)
+            BenchmarkedItem(id: secondID, title: "Test Item 2", timestamp: timestamp.addingTimeInterval(1), payload: payload)
         ]
         try await storage.insert(items: items)
         let fetchedItems = try await storage.fetchAll()
@@ -41,7 +42,7 @@ public struct DatabaseContract {
         #expect(firstItem.timestamp == timestamp)
         #expect(firstItem.payload.count == 10)
         #expect(secondItem.title == "Test Item 2")
-        #expect(secondItem.payload.count == 20)
+        #expect(secondItem.payload == payload)
         
         try await storage.updateAll()
         let updatedItems = try await storage.fetchAll()

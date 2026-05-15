@@ -11,16 +11,16 @@ import MeasurementLayer
 enum MemoryStrategyOption: String, CaseIterable, Identifiable {
 
     case delta = "Delta"
-    case peak = "Peak"
+    case peak = "Sampled Peak"
 
     var id: Self { self }
 
     var helpText: String {
         switch self {
         case .delta:
-            return "Before/after diff. Fast but may miss spikes."
+            return "Signed before/after diff. Fast but may miss spikes."
         case .peak:
-            return "Samples memory during execution."
+            return "Samples peak increase during execution."
         }
     }
 

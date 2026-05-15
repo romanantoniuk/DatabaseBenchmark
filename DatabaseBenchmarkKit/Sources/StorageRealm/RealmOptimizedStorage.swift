@@ -17,7 +17,7 @@ public actor RealmOptimizedStorage: DatabaseService {
     private var realm: Realm!
     
     public init() {
-        let fileURL = URL.documentsDirectory.appending(path: "realm_optimized_benchmark.realm")
+        let fileURL = URL.documentsDirectory.appending(path: "realmOptimizedBenchmark.realm")
         self.config = Realm.Configuration(
             fileURL: fileURL,
             objectTypes: [RealmItem.self]
@@ -33,13 +33,16 @@ public actor RealmOptimizedStorage: DatabaseService {
         guard !items.isEmpty else {
             return
         }
-        var realmItems: [RealmItem] = []
-        realmItems.reserveCapacity(items.count)
-        for item in items {
-            realmItems.append(RealmItem(id: item.id, title: item.title, timestamp: item.timestamp, payload: item.payload))
-        }
-        try await realm.asyncWrite {
-            realm.add(realmItems)
+        let batchSize = 1000
+        var index = 0
+        while index < items.count {
+            let end = min(index + batchSize, items.count)
+            try await realm.asyncWrite {
+                for item in items[index..<end] {
+                    realm.add(RealmItem(id: item.id, title: item.title, timestamp: item.timestamp, payload: item.payload))
+                }
+            }
+            index = end
         }
     }
     
@@ -60,7 +63,7 @@ public actor RealmOptimizedStorage: DatabaseService {
         var benchmarkedItems: [BenchmarkedItem] = []
         benchmarkedItems.reserveCapacity(results.count)
         for realmItem in results {
-            benchmarkedItems.append(BenchmarkedItem(id: realmItem.id, title: realmItem.title, timestamp: realmItem.timestamp, payloadSize: realmItem.payload.count))
+            benchmarkedItems.append(BenchmarkedItem(id: realmItem.id, title: realmItem.title, timestamp: realmItem.timestamp, payload: realmItem.payload))
         }
         return benchmarkedItems
     }

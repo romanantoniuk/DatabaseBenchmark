@@ -14,14 +14,14 @@ A practical R&D project to see how different local databases actually perform on
 
 ## What it measures
 - **Speed:** Time taken for bulk inserts, full reads, and mass updates.
-- **Memory:** Delta for Physical Footprint (heap) and Resident Size (mmap pages).
+- **Memory:** Signed delta or sampled peak increase for Physical Footprint (heap) and Resident Size (mmap pages).
 - **Concurrency:** How databases handle multiple threads throwing data at them simultaneously (using `TaskGroup` stress tests).
 
 ## Under the hood
 - **Swift 6:** Strict concurrency enabled (`actor`, `Sendable`).
 - **Modular Architecture:** Built as an SPM umbrella package (`DatabaseBenchmarkKit`). Dependencies like Realm and GRDB are isolated and don't pollute the main app target.
 - **Data-Driven UI:** SwiftUI + Charts to visualize the results dynamically. Databases, operations, and memory metrics can be toggled on/off to isolate specific tests.
-- **Optimized Variants:** Each database can expose both an idiomatic baseline and a lower-level tuned implementation for apples-to-apples comparison.
+- **Optimized Variants:** Each database can expose both an idiomatic baseline and a tuned implementation. The tuned path follows what the framework realistically offers, so the level of low-level control differs between Core Data, SwiftData, Realm, and GRDB.
 - **Storage Contracts:** Standard and optimized adapters implement the same insert, fetch, update, and cleanup API for direct comparison.
 
 ## Key Observations
@@ -30,7 +30,7 @@ A practical R&D project to see how different local databases actually perform on
 - **Optimized SwiftData** (using batched inserts and scope-isolated contexts) drastically reduces the physical memory footprint, bringing it closer to lower-level solutions.
 - **GRDB** maintains an incredibly flat heap footprint since it maps directly to SQLite via lightweight structs.
 - **Optimized GRDB** uses SQLite WAL mode, cached prepared statements, and cursor-based reads to reduce record mapping overhead.
-- **Optimized Realm** uses actor-isolated Realm access and async writes to avoid repeated Realm openings while respecting Realm's thread confinement model.
+- **Optimized Realm** uses actor-isolated Realm access, chunked async writes, and a reused Realm instance while respecting Realm's thread confinement model.
 
 ## Testing
 - **Swift Testing:** The project utilizes Apple's modern `Testing` framework, leveraging macros, parameterized tests, and concurrency-safe assertions.

@@ -18,7 +18,7 @@ public actor GRDBStorage: DatabaseService {
     public init() {}
 
     public func setup() async throws {
-        let fileURL = URL.documentsDirectory.appending(path: "grdb_benchmark.sqlite")
+        let fileURL = URL.documentsDirectory.appending(path: "grdbStandardBenchmark.sqlite")
         dbQueue = try DatabaseQueue(path: fileURL.path)
         try await dbQueue.write { db in
             try db.create(table: GRDBItem.databaseTableName, ifNotExists: true) { t in
@@ -49,7 +49,7 @@ public actor GRDBStorage: DatabaseService {
         try await dbQueue.read { db in
             let records = try GRDBItem.fetchAll(db)
             return records.map { record in
-                BenchmarkedItem(id: record.id, title: record.title, timestamp: record.timestamp, payloadSize: record.payload.count) }
+                BenchmarkedItem(id: record.id, title: record.title, timestamp: record.timestamp, payload: record.payload) }
         }
     }
 

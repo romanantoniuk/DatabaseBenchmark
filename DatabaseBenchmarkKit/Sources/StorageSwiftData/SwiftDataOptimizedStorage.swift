@@ -18,7 +18,7 @@ public actor SwiftDataOptimizedStorage: DatabaseService {
     
     public func setup() async throws {
         let schema = Schema([SDItem.self])
-        let config = ModelConfiguration(url: URL.documentsDirectory.appending(path: "swiftdata_benchmark.store"))
+        let config = ModelConfiguration(url: URL.documentsDirectory.appending(path: "swiftdataOptimizedBenchmark.store"))
         container = try ModelContainer(for: schema, configurations: [config])
     }
     
@@ -63,7 +63,7 @@ public actor SwiftDataOptimizedStorage: DatabaseService {
         descriptor.includePendingChanges = false
         let results = try context.fetch(descriptor)
         return results.map { sdItem in
-            BenchmarkedItem(id: sdItem.id, title: sdItem.title, timestamp: sdItem.timestamp, payloadSize: sdItem.payload.count)
+            BenchmarkedItem(id: sdItem.id, title: sdItem.title, timestamp: sdItem.timestamp, payload: sdItem.payload)
         }
     }
     

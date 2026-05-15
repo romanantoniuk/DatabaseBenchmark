@@ -23,7 +23,7 @@ public actor CoreDataOptimizedStorage: DatabaseService {
         }
         container = NSPersistentContainer(name: "BenchmarkModel", managedObjectModel: managedObjectModel)
         let description = NSPersistentStoreDescription()
-        description.url = URL.documentsDirectory.appending(path: "coredata_benchmark.sqlite")
+        description.url = URL.documentsDirectory.appending(path: "coredataOptimizedBenchmark.sqlite")
         container.persistentStoreDescriptions = [description]
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             container.loadPersistentStores { _, error in
@@ -80,7 +80,7 @@ public actor CoreDataOptimizedStorage: DatabaseService {
             benchmarkedItems.reserveCapacity(results.count)
             for cdItem in results {
                 autoreleasepool {
-                    benchmarkedItems.append(BenchmarkedItem(id: cdItem.id ?? UUID(), title: cdItem.title ?? "", timestamp: cdItem.timestamp ?? Date(), payloadSize: cdItem.payload?.count ?? 0))
+                    benchmarkedItems.append(BenchmarkedItem(id: cdItem.id ?? UUID(), title: cdItem.title ?? "", timestamp: cdItem.timestamp ?? Date(), payload: cdItem.payload ?? Data()))
                 }
             }
             return benchmarkedItems

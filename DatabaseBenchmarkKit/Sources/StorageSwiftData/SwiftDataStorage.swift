@@ -18,7 +18,7 @@ public actor SwiftDataStorage: DatabaseService {
 
     public func setup() async throws {
         let schema = Schema([SDItem.self])
-        let config = ModelConfiguration(url: URL.documentsDirectory.appending(path: "swiftdata_benchmark.store"))
+        let config = ModelConfiguration(url: URL.documentsDirectory.appending(path: "swiftdataStandardBenchmark.store"))
         container = try ModelContainer(for: schema, configurations: [config])
     }
 
@@ -50,7 +50,7 @@ public actor SwiftDataStorage: DatabaseService {
         let context = ModelContext(container)
         let descriptor = FetchDescriptor<SDItem>()
         let results = try context.fetch(descriptor)
-        return results.map { sdItem in BenchmarkedItem(id: sdItem.id, title: sdItem.title, timestamp: sdItem.timestamp, payloadSize: sdItem.payload.count) }
+        return results.map { sdItem in BenchmarkedItem(id: sdItem.id, title: sdItem.title, timestamp: sdItem.timestamp, payload: sdItem.payload) }
     }
 
     public func clearAll() async throws {

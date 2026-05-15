@@ -22,6 +22,13 @@ import Testing
         #expect(item.timestamp == timestamp)
         #expect(item.payload.count == payloadSize)
     }
+
+    @Test("BenchmarkedItem preserves payload bytes")
+    func testPayloadInitialization() {
+        let payload = Data([3, 1, 4, 1, 5, 9])
+        let item = BenchmarkedItem(title: "Payload", payload: payload)
+        #expect(item.payload == payload)
+    }
     
     @Test("BenchmarkedItem supports empty payloads")
     func testEmptyPayload() {

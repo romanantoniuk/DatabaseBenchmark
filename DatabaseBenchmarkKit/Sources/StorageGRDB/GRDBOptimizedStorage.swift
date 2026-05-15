@@ -18,7 +18,7 @@ public actor GRDBOptimizedStorage: DatabaseService {
     public init() {}
 
     public func setup() async throws {
-        let fileURL = URL.documentsDirectory.appending(path: "grdb_optimized_benchmark.sqlite")
+        let fileURL = URL.documentsDirectory.appending(path: "grdbOptimizedBenchmark.sqlite")
         var configuration = Configuration()
         configuration.prepareDatabase { db in
             try db.execute(sql: "PRAGMA journal_mode = WAL")
@@ -69,7 +69,7 @@ public actor GRDBOptimizedStorage: DatabaseService {
                 let title: String = row["title"]
                 let timestamp: Date = row["timestamp"]
                 let payload: Data = row["payload"]
-                items.append(BenchmarkedItem(id: UUID(uuidString: idString) ?? UUID(), title: title, timestamp: timestamp, payloadSize: payload.count))
+                items.append(BenchmarkedItem(id: UUID(uuidString: idString) ?? UUID(), title: title, timestamp: timestamp, payload: payload))
             }
             return items
         }

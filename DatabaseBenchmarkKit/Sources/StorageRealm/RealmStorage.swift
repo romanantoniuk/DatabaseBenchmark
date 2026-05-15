@@ -15,7 +15,7 @@ public actor RealmStorage: DatabaseService {
     private let config: Realm.Configuration
     
     public init() {
-        let fileURL = URL.documentsDirectory.appending(path: "realm_benchmark.realm")
+        let fileURL = URL.documentsDirectory.appending(path: "realmStandardBenchmark.realm")
         self.config = Realm.Configuration(fileURL: fileURL)
     }
 
@@ -53,7 +53,7 @@ public actor RealmStorage: DatabaseService {
         try await Task.detached {
             let realm = try Realm(configuration: self.config)
             let results = realm.objects(RealmItem.self)
-            return Array(results).map { realmItem in BenchmarkedItem(id: realmItem.id, title: realmItem.title, timestamp: realmItem.timestamp, payloadSize: realmItem.payload.count) }
+            return Array(results).map { realmItem in BenchmarkedItem(id: realmItem.id, title: realmItem.title, timestamp: realmItem.timestamp, payload: realmItem.payload) }
         }.value
     }
 

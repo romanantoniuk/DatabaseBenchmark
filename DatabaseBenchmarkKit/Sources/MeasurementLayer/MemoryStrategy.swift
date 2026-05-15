@@ -10,9 +10,9 @@ import Foundation
 
 public enum MemoryStrategy: Sendable {
     
-    /// Before / after diff. Fast, but may miss short-lived allocations.
+    /// Signed before / after diff. Fast, but may miss short-lived allocations.
     case delta
-    /// Background sampling. Slightly slower, but catches spikes.
+    /// Sampled peak increase over baseline. Slightly slower, but catches more spikes.
     case peak(samplingInterval: Duration)
     
 }

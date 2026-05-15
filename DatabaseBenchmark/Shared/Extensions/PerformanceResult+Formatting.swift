@@ -35,10 +35,30 @@ extension PerformanceResult {
         case .residentSize:
             prefix = "res"
         }
-        if value < 0.01 {
-            return "\(prefix): <0.01 MB"
+        return "\(prefix): \(Self.formattedMemoryDelta(value))"
+    }
+
+    private static func formattedMemoryDelta(_ valueInMB: Double) -> String {
+        let bytes = abs(valueInMB) * 1_048_576
+        let sign = valueInMB > 0 ? "+" : valueInMB < 0 ? "-" : ""
+        if bytes == 0 {
+            return "0 B"
         }
-        return String(format: "\(prefix): +%.2f MB", value)
+        if bytes < 1 {
+            return "<1 B"
+        }
+        if bytes < 1024 {
+            return String(format: "\(sign)%.0f B", bytes)
+        }
+        let kilobytes = bytes / 1024
+        if kilobytes < 1024 {
+            return String(format: "\(sign)%.1f KB", kilobytes)
+        }
+        let megabytes = kilobytes / 1024
+        if megabytes < 1024 {
+            return String(format: "\(sign)%.2f MB", megabytes)
+        }
+        return String(format: "\(sign)%.2f GB", megabytes / 1024)
     }
 
 }

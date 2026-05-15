@@ -23,7 +23,7 @@ public actor CoreDataStorage: DatabaseService {
         }
         container = NSPersistentContainer(name: "BenchmarkModel", managedObjectModel: managedObjectModel)
         let description = NSPersistentStoreDescription()
-        description.url = URL.documentsDirectory.appending(path: "coredata_benchmark.sqlite")
+        description.url = URL.documentsDirectory.appending(path: "coredataStandardBenchmark.sqlite")
         container.persistentStoreDescriptions = [description]
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             container.loadPersistentStores { _, error in
@@ -64,7 +64,7 @@ public actor CoreDataStorage: DatabaseService {
         try await container.performBackgroundTask { context in
             let request = NSFetchRequest<CDBenchmarkItem>(entityName: "CDBenchmarkItem")
             let results = try context.fetch(request)
-            return results.map { cdItem in BenchmarkedItem(id: cdItem.id ?? UUID(), title: cdItem.title ?? "", timestamp: cdItem.timestamp ?? Date(), payloadSize: cdItem.payload?.count ?? 0) }
+            return results.map { cdItem in BenchmarkedItem(id: cdItem.id ?? UUID(), title: cdItem.title ?? "", timestamp: cdItem.timestamp ?? Date(), payload: cdItem.payload ?? Data()) }
         }
     }
 
