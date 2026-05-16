@@ -28,13 +28,23 @@ struct BenchmarkSettingsView: View {
     // MARK: - Sections
     private var databasesSection: some View {
         Section {
-            FlowLayout(spacing: 8, rowSpacing: 10) {
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(), spacing: 8),
+                    GridItem(.flexible(), spacing: 8)
+                ],
+                alignment: .leading,
+                spacing: 10
+            ) {
                 ForEach(availableDatabases, id: \.self) { dbName in
-                    DatabaseChip(title: dbName, isSelected: settings.binding(forDatabase: dbName))
+                    DatabaseChip(
+                        title: dbName,
+                        isSelected: settings.binding(forDatabase: dbName)
+                    )
                 }
             }
             .padding(.vertical, 8)
-            .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+            .listRowInsets(.init(top: 12, leading: 16, bottom: 12, trailing: 16))
         } header: {
             Text("Target Databases")
         } footer: { }

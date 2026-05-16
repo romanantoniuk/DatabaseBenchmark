@@ -30,13 +30,20 @@ struct DatabaseChip: View {
             Text(displayTitle)
                 .font(.subheadline.weight(.semibold))
                 .lineLimit(1)
-                .foregroundStyle(isSelected ? .blue : .primary)
-                .padding(.horizontal, 14)
+                .truncationMode(.middle)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 12)
                 .padding(.vertical, 8)
+                .foregroundStyle(isSelected ? .blue : .primary)
                 .background {
                     Capsule()
-                        .fill(isSelected ? Color.blue.opacity(0.18) : Color.secondary.opacity(0.18))
+                        .fill(
+                            isSelected
+                            ? Color.blue.opacity(0.18)
+                            : Color.secondary.opacity(0.18)
+                        )
                 }
+                .contentShape(Capsule())
         }
         .buttonStyle(.plain)
     }
