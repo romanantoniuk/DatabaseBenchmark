@@ -28,14 +28,16 @@ struct BenchmarkSettingsView: View {
     // MARK: - Sections
     private var databasesSection: some View {
         Section {
-            ForEach(availableDatabases, id: \.self) { dbName in
-                Toggle(dbName, isOn: settings.binding(forDatabase: dbName))
+            FlowLayout(spacing: 8, rowSpacing: 10) {
+                ForEach(availableDatabases, id: \.self) { dbName in
+                    DatabaseChip(title: dbName, isSelected: settings.binding(forDatabase: dbName))
+                }
             }
+            .padding(.vertical, 8)
+            .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
         } header: {
             Text("Target Databases")
-        } footer: {
-            Text("Choose databases to include.")
-        }
+        } footer: { }
     }
     
     private var benchmarkSection: some View {
