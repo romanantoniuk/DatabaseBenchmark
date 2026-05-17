@@ -12,12 +12,14 @@ import MeasurementLayer
 struct BenchmarkChartView: View {
     
     let results: [PerformanceResult]
+    let activeMetrics: [MemoryMetric]
     
     var body: some View {
         VStack(spacing: 20) {
             timeChart
-            memoryChart
-            residentMemoryChart
+            ForEach(activeMetrics) { metric in
+                memoryChart(for: metric)
+            }
         }
         .padding(.vertical)
     }
@@ -39,31 +41,14 @@ struct BenchmarkChartView: View {
         }
     }
     
-    private var memoryChart: some View {
+    private func memoryChart(for metric: MemoryMetric) -> some View {
         VStack(alignment: .leading) {
-            Text("Memory Impact: Heap (MB)")
+            Text(metric.chartTitle)
                 .font(.headline)
             Chart(results) { result in
                 BarMark(
                     x: .value("Database", result.databaseName),
-                    y: .value("Memory", result.physFootprintDeltaMB)
-                )
-                .foregroundStyle(by: .value("Operation", result.operationName))
-                .position(by: .value("Operation", result.operationName))
-            }
-            .frame(height: 180)
-            .chartLegend(.hidden)
-        }
-    }
-    
-    private var residentMemoryChart: some View {
-        VStack(alignment: .leading) {
-            Text("Memory Impact: Resident (MB)")
-                .font(.headline)
-            Chart(results) { result in
-                BarMark(
-                    x: .value("Database", result.databaseName),
-                    y: .value("Memory", result.residentSizeDeltaMB)
+                    y: .value("Memory", result.memoryValue(for: metric))
                 )
                 .foregroundStyle(by: .value("Operation", result.operationName))
                 .position(by: .value("Operation", result.operationName))
@@ -74,3 +59,17 @@ struct BenchmarkChartView: View {
     }
     
 }
+
+private extension MemoryMetric {
+    
+    var chartTitle: String {
+        switch self {
+        case .physFootprint:
+            return "Memory Impact: Physical Footprint (MB)"
+        case .residentSize:
+            return "Memory Impact: Resident Size (MB)"
+        }
+    }
+    
+}
+

@@ -14,7 +14,7 @@ A practical R&D project to see how different local databases actually perform on
 
 ## What it measures
 - **Speed:** Time taken for bulk inserts, full reads, and mass updates.
-- **Memory:** Signed delta or sampled peak increase for Physical Footprint (heap) and Resident Size (mmap pages).
+- **Memory:** Signed delta or sampled peak increase for Physical Footprint (Instruments-style process footprint) and Resident Size (mmap-aware resident pages).
 - **Concurrency:** How databases handle multiple threads throwing data at them simultaneously (using `TaskGroup` stress tests).
 
 ## Under the hood

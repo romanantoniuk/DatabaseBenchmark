@@ -20,6 +20,7 @@ final class BenchmarkDashboardViewModel {
     var results: [PerformanceResult] = []
     var isRunning = false
     var errorMessage: String?
+    var currentRunDescription: String?
     let settings = BenchmarkSettings()
     
     var hasError: Bool {
@@ -120,8 +121,10 @@ final class BenchmarkDashboardViewModel {
         }
         isRunning = true
         errorMessage = nil
+        currentRunDescription = nil
         results.removeAll()
         defer {
+            currentRunDescription = nil
             isRunning = false
         }
         let runner = MeasurementRunner(configuration: settings.runnerConfiguration)
@@ -138,16 +141,14 @@ final class BenchmarkDashboardViewModel {
     
     private func runBenchmark(for service: any DatabaseService, items: [BenchmarkedItem], using runner: MeasurementRunner) async {
         do {
+            currentRunDescription = "\(service.name) - Preparing"
             try await service.setup()
-            defer {
-                Task {
-                    try? await service.clearAll()
-                }
-            }
             if settings.enabledOperations.contains(.insert) {
+                let operationName = "Insert \(settings.itemsCount) items"
+                currentRunDescription = "\(service.name) - Insert"
                 let insertResult = try await runner.runBenchmark(
                     databaseName: service.name,
-                    operationName: "Insert \(settings.itemsCount) items",
+                    operationName: operationName,
                     setup: {
                         try await service.clearAll()
                     },
@@ -160,9 +161,11 @@ final class BenchmarkDashboardViewModel {
                 results.append(insertResult)
             }
             if settings.enabledOperations.contains(.fetch) {
+                let operationName = "Fetch all items"
+                currentRunDescription = "\(service.name) - Fetch"
                 let fetchResult = try await runner.runBenchmark(
                     databaseName: service.name,
-                    operationName: "Fetch all items",
+                    operationName: operationName,
                     setup: {
                         try await service.clearAll()
                         try await service.insert(items: items)
@@ -176,9 +179,11 @@ final class BenchmarkDashboardViewModel {
                 results.append(fetchResult)
             }
             if settings.enabledOperations.contains(.update) {
+                let operationName = "Update all items"
+                currentRunDescription = "\(service.name) - Update"
                 let updateResult = try await runner.runBenchmark(
                     databaseName: service.name,
-                    operationName: "Update all items",
+                    operationName: operationName,
                     setup: {
                         try await service.clearAll()
                         try await service.insert(items: items)
@@ -192,9 +197,11 @@ final class BenchmarkDashboardViewModel {
                 results.append(updateResult)
             }
             if settings.enabledOperations.contains(.concurrentInsert) {
+                let operationName = "Concurrent Insert (\(settings.concurrentTasks) tasks)"
+                currentRunDescription = "\(service.name) - Concurrent insert"
                 let result = try await runner.runBenchmark(
                     databaseName: service.name,
-                    operationName: "Concurrent Insert (\(settings.concurrentTasks) tasks)",
+                    operationName: operationName,
                     setup: {
                         try await service.clearAll()
                     },
@@ -222,7 +229,11 @@ final class BenchmarkDashboardViewModel {
                 }
                 results.append(result)
             }
+            currentRunDescription = "\(service.name) - Cleaning up"
+            try? await service.clearAll()
         } catch {
+            currentRunDescription = "\(service.name) - Cleaning up"
+            try? await service.clearAll()
             errorMessage = "\(service.name): \(error.localizedDescription)"
         }
     }

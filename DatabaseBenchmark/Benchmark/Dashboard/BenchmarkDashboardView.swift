@@ -78,7 +78,7 @@ struct BenchmarkDashboardView: View {
             configurationHeader
             if !viewModel.results.isEmpty {
                 Section {
-                    BenchmarkChartView(results: viewModel.results)
+                    BenchmarkChartView(results: viewModel.results, activeMetrics: viewModel.activeMetrics)
                         .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                 }
             }
@@ -118,8 +118,11 @@ struct BenchmarkDashboardView: View {
                     if viewModel.isRunning {
                         HStack(spacing: 8) {
                             ProgressView()
-                            Text("Analyzing...")
+                            Text(viewModel.currentRunDescription ?? "Analyzing...")
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                         }
+                        .frame(maxWidth: .infinity)
                     } else {
                         Text("Run benchmark")
                             .frame(maxWidth: .infinity)

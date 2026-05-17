@@ -83,6 +83,7 @@ public actor MeasurementRunner {
         }
         await sampler.sample()
         samplerTask.cancel()
+        await samplerTask.value
         let peak = await sampler.peak
         if let error = operationError {
             throw error
