@@ -56,6 +56,34 @@ struct DatabaseBenchmarkTests {
         #expect(viewModel.activeMetrics == [.residentSize])
     }
     
+    @Test("ViewModel keeps active metrics in display order")
+    func testActiveMetricsDisplayOrder() {
+        let viewModel = BenchmarkDashboardViewModel()
+        viewModel.settings.visibleMetrics = [.residentSize, .physFootprint]
+        
+        #expect(viewModel.activeMetrics == [.physFootprint, .residentSize])
+        viewModel.settings.visibleMetrics = [.residentSize]
+        #expect(viewModel.activeMetrics == [.residentSize])
+    }
+    
+    @Test("ViewModel clears error and progress state predictably")
+    func testViewModelTransientState() async {
+        let viewModel = BenchmarkDashboardViewModel()
+        viewModel.errorMessage = "Failed"
+        viewModel.currentRunDescription = "Core Data - Insert"
+        viewModel.hasError = false
+        
+        #expect(viewModel.errorMessage == nil)
+        #expect(!viewModel.hasError)
+        #expect(viewModel.currentRunDescription == "Core Data - Insert")
+        
+        viewModel.settings.enabledDatabases.removeAll()
+        await viewModel.runAllTests()
+        #expect(!viewModel.isRunning)
+        #expect(viewModel.currentRunDescription == "Core Data - Insert")
+        #expect(viewModel.results.isEmpty)
+    }
+    
     @Test("ViewModel reports missing configuration")
     func testConfigurationIssues() {
         let viewModel = BenchmarkDashboardViewModel()
@@ -166,6 +194,7 @@ struct DatabaseBenchmarkTests {
         let fast = PerformanceResult(databaseName: "DB", operationName: "Fetch", durationInSeconds: 0.1234, physFootprintDeltaMB: 0.001, residentSizeDeltaMB: 2.5)
         let slow = PerformanceResult(databaseName: "DB", operationName: "Insert", durationInSeconds: 1.23456, physFootprintDeltaMB: 1.25, residentSizeDeltaMB: 0.001)
         let released = PerformanceResult(databaseName: "DB", operationName: "Update", durationInSeconds: 0.5, physFootprintDeltaMB: -1.25, residentSizeDeltaMB: -0.5)
+        let byteSized = PerformanceResult(databaseName: "DB", operationName: "Fetch", durationInSeconds: 0.5, physFootprintDeltaMB: 0.0005, residentSizeDeltaMB: 0.0000005)
         let large = PerformanceResult(databaseName: "DB", operationName: "Insert", durationInSeconds: 0.5, physFootprintDeltaMB: 2048, residentSizeDeltaMB: 0)
         
         #expect(fast.formattedDuration == "123.4 ms")
@@ -178,6 +207,8 @@ struct DatabaseBenchmarkTests {
         #expect(slow.formattedMemory(for: .residentSize) == "res: +1.0 KB")
         #expect(released.formattedMemory(for: .physFootprint) == "heap: -1.25 MB")
         #expect(released.formattedMemory(for: .residentSize) == "res: -512.0 KB")
+        #expect(byteSized.formattedMemory(for: .physFootprint) == "heap: +524 B")
+        #expect(byteSized.formattedMemory(for: .residentSize) == "res: <1 B")
         #expect(large.formattedMemory(for: .physFootprint) == "heap: +2.00 GB")
         #expect(large.formattedMemory(for: .residentSize) == "res: 0 B")
     }
