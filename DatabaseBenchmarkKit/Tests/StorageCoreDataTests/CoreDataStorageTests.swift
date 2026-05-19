@@ -12,7 +12,7 @@ import CoreDomain
 import StorageTestSupport
 
 @Suite(.serialized)
-struct SwiftDataStorageTests {
+struct CoreDataStorageTests {
     
     struct StorageTestCase {
         let storage: any DatabaseService
@@ -20,7 +20,7 @@ struct SwiftDataStorageTests {
     }
     
     @Test(
-        "SwiftData storage conforms to DatabaseService contract",
+        "Core Data storage conforms to DatabaseService contract",
         arguments: [
             StorageTestCase(storage: CoreDataStorage(), expectedName: "Core Data (Standard)"),
             StorageTestCase(storage: CoreDataOptimizedStorage(), expectedName: "Core Data (Optimized)")

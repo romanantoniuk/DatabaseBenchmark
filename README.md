@@ -3,11 +3,11 @@
 A practical R&D project to see how different local databases actually perform on iOS. Instead of just tracking time, it measures real memory footprint using Mach kernel APIs and tests thread safety under load.
 
 ## Frameworks tested
-- **Core Data (Standard)** (classic NSManagedObject batch insert)
+- **Core Data (Standard)** (classic `NSManagedObject` insert loop in a background context)
 - **Core Data (Optimized)** (streaming SQLite writes via `NSBatchInsertRequest`)
 - **SwiftData (Standard)** (default `@Model` overhead)
 - **SwiftData (Optimized)** (memory-efficient batching using isolated `ModelContext` instances)
-- **Realm (Standard)** (v20, local-only)
+- **Realm (Standard)** (Realm 20.x, local-only)
 - **Realm (Optimized)** (actor-isolated Realm with async writes)
 - **GRDB (Standard)** (SQLite via Swift structs)
 - **GRDB (Optimized)** (DatabasePool, WAL mode, cached SQL statements)
@@ -15,7 +15,7 @@ A practical R&D project to see how different local databases actually perform on
 ## What it measures
 - **Speed:** Time taken for bulk inserts, full reads, and mass updates.
 - **Memory:** Signed delta or sampled peak increase for Physical Footprint (Instruments-style process footprint) and Resident Size (mmap-aware resident pages).
-- **Concurrency:** How databases handle multiple threads throwing data at them simultaneously (using `TaskGroup` stress tests).
+- **Concurrency:** How databases handle multiple Swift tasks inserting data simultaneously (using `TaskGroup` stress tests).
 
 ## Under the hood
 - **Swift 6:** Strict concurrency enabled (`actor`, `Sendable`).
